@@ -1,0 +1,33 @@
+{
+  "locus": "01_FAD2_FAD2_chr08B",
+  "description": "FAD2 locus on chr08B; first verified Panviz rendering baseline.",
+  "svg_root": {
+    "width": "1800",
+    "height": "688",
+    "viewBox": "-35 -220 2253 860"
+  },
+  "required_classes": {
+    "track": 1,
+    "node": 1,
+    "genomic-axis": 1,
+    "genomic-scale-bar": 1
+  },
+  "required_text": [
+    "14.046 Mb",
+    "14.107 Mb",
+    "5 kb"
+  ],
+  "forbidden_substrings": [
+    "preserveAspectRatio=\"none\""
+  ],
+  "metadata_counts": {
+    "input_nodes": 77,
+    "input_tracks": 16,
+    "nodeChildren": 77,
+    "trackChildren": 482,
+    "panelWidth": 1800,
+    "panelHeight": 688,
+    "viewBoxWidth": 2253,
+    "viewBoxHeight": 860
+  }
+}

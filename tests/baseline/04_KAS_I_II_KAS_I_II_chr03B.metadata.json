@@ -1,0 +1,52 @@
+{
+  "status": "trial",
+  "renderer": "official SequenceTubeMap tubemap.js with coordinate-level x compression",
+  "upstream_commit": "33b7a7e5df9f8052974ef8e6c689a031dac6e2c9",
+  "locus": "04_KAS_I_II_KAS_I_II_chr03B",
+  "input": {
+    "gfa": "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629/04_KAS_I_II_KAS_I_II_chr03B/04_KAS_I_II_KAS_I_II_chr03B_pathcollapsed_SV1kb.gfa",
+    "path_groups": "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629/04_KAS_I_II_KAS_I_II_chr03B/04_KAS_I_II_KAS_I_II_chr03B_pathcollapsed_SV1kb.path_groups.tsv",
+    "region": "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629/04_KAS_I_II_KAS_I_II_chr03B/region.txt"
+  },
+  "output": {
+    "svg": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/smoke_04_local_node_modules/04_KAS_I_II_KAS_I_II_chr03B/04_KAS_I_II_KAS_I_II_chr03B_sequencetubemap_mainfig_natural.svg",
+    "png": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/smoke_04_local_node_modules/04_KAS_I_II_KAS_I_II_chr03B/04_KAS_I_II_KAS_I_II_chr03B_sequencetubemap_mainfig_natural.png",
+    "pdf": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/smoke_04_local_node_modules/04_KAS_I_II_KAS_I_II_chr03B/04_KAS_I_II_KAS_I_II_chr03B_sequencetubemap_mainfig_natural.pdf",
+    "input_json": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/smoke_04_local_node_modules/04_KAS_I_II_KAS_I_II_chr03B/04_KAS_I_II_KAS_I_II_chr03B_sequencetubemap_mainfig_natural_input.json"
+  },
+  "counts": {
+    "input_nodes": 127,
+    "input_tracks": 18,
+    "tracks": 1,
+    "nodes": 1,
+    "trackChildren": 982,
+    "nodeChildren": 127,
+    "panelWidth": 1800,
+    "panelHeight": 394,
+    "viewBoxWidth": 3562,
+    "viewBoxHeight": 779
+  },
+  "visOptions": {
+    "compressedView": true,
+    "removeRedundantNodes": false,
+    "transparentNodes": false,
+    "showReads": false,
+    "showSoftClips": false,
+    "coloredNodes": [],
+    "mappingQualityCutoff": 0
+  },
+  "referenceCoordinate": {
+    "chrom": "chr03B",
+    "start": 87038889,
+    "end": 87102053
+  },
+  "mainFigure": {
+    "panelWidth": 1800,
+    "xCompression": 0.32,
+    "padX": 35,
+    "padY": 170,
+    "nodeStrokeWidth": 1.5,
+    "deviceScaleFactor": 2.0
+  },
+  "note": "X coordinates are compressed after official layout; no non-uniform SVG scaling is used, so strokes and text are not squeezed."
+}

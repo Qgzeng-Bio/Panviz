@@ -1,0 +1,33 @@
+{
+  "locus": "04_KAS_I_II_KAS_I_II_chr03B",
+  "description": "KAS_I_II locus on chr03B; second verified Panviz rendering baseline.",
+  "svg_root": {
+    "width": "1800",
+    "height": "394",
+    "viewBox": "-35 -220 3562 779"
+  },
+  "required_classes": {
+    "track": 1,
+    "node": 1,
+    "genomic-axis": 1,
+    "genomic-scale-bar": 1
+  },
+  "required_text": [
+    "87.039 Mb",
+    "87.102 Mb",
+    "5 kb"
+  ],
+  "forbidden_substrings": [
+    "preserveAspectRatio=\"none\""
+  ],
+  "metadata_counts": {
+    "input_nodes": 127,
+    "input_tracks": 18,
+    "nodeChildren": 127,
+    "trackChildren": 982,
+    "panelWidth": 1800,
+    "panelHeight": 394,
+    "viewBoxWidth": 3562,
+    "viewBoxHeight": 779
+  }
+}

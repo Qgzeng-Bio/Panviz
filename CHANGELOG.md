@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Structural visual-regression test (`tests/check_svg_structure.py`) with
+  committed reference fixtures and per-locus contracts under `tests/baseline/`
+  for loci 01 (FAD2) and 04 (KAS_I_II). Runs offline against fixtures or against
+  a fresh render via `--from`; exits non-zero on any regression.
+
+### Removed
+- Unreferenced legacy export scripts `harness/export_exact.js` and
+  `harness/export_mainfig.js` (dead code; not on the active render path).
+
 ## [0.1.0-baseline] - 2026-06-30
 
 First version-controlled snapshot. Captures the verified rendering baseline so
