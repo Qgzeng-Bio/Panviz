@@ -48,25 +48,26 @@ src/style      colors, strokes, node shapes
 src/render     SVG emission
 ```
 
-### Why this is gated, not yet executed
+### Prerequisites
 
-1. **It requires rebuilding the bundle.** `tubemap.js` is compiled into
+1. **Reproducible bundle build — DONE.** `tubemap.js` is compiled into
    `harness/dist/…bundle.js`; any change to the core only takes effect after
-   `npm run build`. That needs the JS build toolchain (`d3` v5 line,
-   `d3-selection-multi`, `deep-equal`, `webpack`) installed via `npm install`,
-   which is currently deferred (large download / network). See
-   [INSTALL.md](INSTALL.md) and `package.json`.
+   `npm run build`. The JS build toolchain (`d3` v5 line, `d3-selection-multi`,
+   `deep-equal`, `webpack`) is now pinned in a committed `package-lock.json`, and
+   `npm ci && npm run build` rebuilds the bundle **deterministically** (two
+   builds are byte-identical) producing **byte-identical SVG** for the covered
+   loci. See [INSTALL.md](INSTALL.md).
 
-2. **It must not change the output.** The hard invariant is byte-identical
-   figures. Before any core rewrite, two guards must be in place:
-   - the existing SVG byte-exact regression (`tests/check_svg_structure.py`), and
-   - a finer **layout snapshot** (pre-post-processing SVG / node+lane geometry)
-     so a refactor can be localized, not just detected at the final pixel.
+2. **It must not change the output — guard required.** The hard invariant is
+   byte-identical figures. The SVG byte-exact regression
+   (`tests/check_svg_structure.py`) is in place; before the core rewrite, add a
+   finer **layout snapshot** (pre-post-processing SVG / node+lane geometry) so a
+   refactor can be localized, not just detected at the final pixel.
 
-### Recommended execution order (when the toolchain is enabled)
+### Recommended execution order
 
-1. Commit a reproducible bundle build (`npm ci` + `package-lock.json`).
-2. Add the layout-snapshot guard.
+1. ~~Commit a reproducible bundle build (`npm ci` + `package-lock.json`).~~ Done.
+2. Add the layout-snapshot guard. **(next)**
 3. Fork one function at a time (node width, lane placement, path generation…),
    each behind the regression + snapshot, preserving MIT provenance for any
    derived portion.

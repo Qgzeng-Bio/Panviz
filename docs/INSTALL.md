@@ -68,10 +68,13 @@ You should get `results/toy/toy_locus/…natural.{svg,pdf,png}` matching
 Only needed if you edit `src/panviz_core/` or `harness/tubemap_exact_entry.js`.
 
 ```bash
-npm install            # installs d3 (v5 line), d3-selection-multi, deep-equal,
-                       # webpack, webpack-cli (see package.json devDependencies)
+npm ci                 # reproducible install from the committed package-lock.json
+                       # (d3 v5 line, d3-selection-multi, deep-equal, webpack)
 npm run build          # webpack -> harness/dist/sequencetubemap_exact_bundle.js
 ```
+
+`npm ci && npm run build` rebuilds the bundle deterministically (two builds are
+byte-identical) and reproduces byte-identical SVG output for the covered loci.
 
 > The core uses d3 **v5** APIs (`d3.event`) and `d3-selection-multi`; stay on the
 > d3 v5 line. The committed bundle is the authoritative baseline. **After any
@@ -84,5 +87,4 @@ npm run build          # webpack -> harness/dist/sequencetubemap_exact_bundle.js
 > python3 tests/check_svg_structure.py --from results/rebuild_check
 > ```
 
-When `npm install` is run with registry access it produces `package-lock.json`;
-commit it so builds become reproducible.
+`package-lock.json` is committed, so `npm ci` pins the exact build toolchain.

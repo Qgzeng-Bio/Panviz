@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Reproducible JS build: committed `package-lock.json` pinning the bundle
+  toolchain. `npm ci && npm run build` now rebuilds
+  `harness/dist/sequencetubemap_exact_bundle.js` **deterministically**
+  (two builds byte-identical) and reproduces **byte-identical SVG** output for
+  the covered loci. The committed bundle was regenerated from the locked
+  toolchain (figures unchanged); this unblocks the Stage 6 core fork.
+
 ### Changed (repo layout)
 - Consolidated all runnable scripts under `scripts/` — the CLI launcher
   (`bin/panviz` → `scripts/panviz`), the baseline wrapper
