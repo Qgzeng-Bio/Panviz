@@ -35,6 +35,9 @@ jobs:
       - name: Unit tests
         run: python -m unittest discover -s tests -p 'test_*.py' -v
 
+      - name: JS syntax check (export adapter + post-processing)
+        run: node --check harness/export_mainfig_natural.js && node --check harness/lib/postprocess.js
+
       - name: Structural regression (offline fixtures)
         run: python tests/check_svg_structure.py
 

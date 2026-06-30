@@ -35,17 +35,27 @@ def _strip_orientation(token: str) -> str:
     return token[:-1] if token and token[-1] in "+-" else token
 
 
-def _parse_gfa(path: Path) -> tuple[dict[str, int | None], dict[str, list[str]], list[str]]:
-    """Return (segments name->LN, paths name->tokens, duplicate segment names)."""
+def _check_gfa(path: Path) -> list[Issue]:
+    if not path.exists():
+        return [("error", f"GFA missing: {path}")]
+    if path.stat().st_size == 0:
+        return [("error", f"GFA empty: {path}")]
+
     segments: dict[str, int | None] = {}
     paths: dict[str, list[str]] = {}
-    duplicates: list[str] = []
+    duplicates: set[str] = set()
+    bad_ln: set[str] = set()
+    unoriented: set[str] = set()
+    malformed_s = 0
     with path.open() as handle:
         for line in handle:
             fields = line.rstrip("\n").split("\t")
             if not fields or not fields[0]:
                 continue
-            if fields[0] == "S" and len(fields) >= 2:
+            if fields[0] == "S":
+                if len(fields) < 3:
+                    malformed_s += 1
+                    continue
                 name = fields[1]
                 length: int | None = None
                 for tag in fields[3:]:
@@ -54,36 +64,33 @@ def _parse_gfa(path: Path) -> tuple[dict[str, int | None], dict[str, list[str]],
                         try:
                             length = int(parts[2])
                         except ValueError:
-                            length = None
+                            bad_ln.add(name)
                 if name in segments:
-                    duplicates.append(name)
+                    duplicates.add(name)
                 segments[name] = length
             elif fields[0] == "P" and len(fields) >= 3:
-                paths[fields[1]] = [t for t in fields[2].split(",") if t]
-    return segments, paths, duplicates
+                tokens = [t for t in fields[2].split(",") if t]
+                for token in tokens:
+                    if token[-1] not in "+-":
+                        unoriented.add(token)
+                paths[fields[1]] = tokens
 
-
-def _check_gfa(path: Path) -> list[Issue]:
-    if not path.exists():
-        return [("error", f"GFA missing: {path}")]
-    if path.stat().st_size == 0:
-        return [("error", f"GFA empty: {path}")]
-
-    segments, paths, duplicates = _parse_gfa(path)
     issues: list[Issue] = []
     if not segments:
         issues.append(("error", f"GFA has no segment (S) lines: {path}"))
     if not paths:
         issues.append(("error", f"GFA has no path (P) lines: {path}"))
-
+    if malformed_s:
+        issues.append(("error", f"{malformed_s} malformed S line(s) (need name + sequence): {path}"))
     if duplicates:
-        uniq = ", ".join(sorted(set(duplicates))[:5])
-        issues.append(("warning", f"duplicate segment ids ({uniq}): {path}"))
-
+        issues.append(("error", f"duplicate segment ids ({', '.join(sorted(duplicates)[:5])}): {path}"))
+    if bad_ln:
+        issues.append(("error", f"non-integer LN on segment(s) ({', '.join(sorted(bad_ln)[:5])}): {path}"))
     bad_len = sorted(n for n, ln in segments.items() if ln is not None and ln <= 0)
     if bad_len:
-        issues.append(("warning", f"segments with non-positive LN ({', '.join(bad_len[:5])}): {path}"))
-
+        issues.append(("error", f"non-positive LN on segment(s) ({', '.join(bad_len[:5])}): {path}"))
+    if unoriented:
+        issues.append(("error", f"path tokens without +/- orientation ({', '.join(sorted(unoriented)[:5])}): {path}"))
     if paths and "Ref" not in paths:
         issues.append(("warning", f"no reference path named 'Ref': {path}"))
 
@@ -95,8 +102,7 @@ def _check_gfa(path: Path) -> list[Issue]:
             if name not in segments:
                 missing.add(name)
     if missing:
-        sample = ", ".join(sorted(missing)[:5])
-        issues.append(("error", f"path references undefined segment(s) ({sample}): {path}"))
+        issues.append(("error", f"path references undefined segment(s) ({', '.join(sorted(missing)[:5])}): {path}"))
     return issues
 
 
@@ -123,7 +129,7 @@ def _check_path_groups(path: Path) -> list[Issue]:
                 if int(cells[idx]) <= 0:
                     raise ValueError
             except ValueError:
-                issues.append(("warning", f"invalid n_members {cells[idx]!r} in {path}"))
+                issues.append(("error", f"invalid n_members {cells[idx]!r} in {path}"))
                 break
     return issues
 
@@ -139,7 +145,9 @@ def _check_region(path: Path) -> list[Issue]:
             issues.append(("error", f"region file missing {key!r}: {path}"))
             continue
         match = _COORD_RE.search(line)
-        if match and int(match.group(2)) >= int(match.group(3)):
+        if not match:
+            issues.append(("error", f"malformed coordinate for {key.rstrip('=')}: {line.strip()}"))
+        elif int(match.group(2)) >= int(match.group(3)):
             issues.append(("error", f"region {key.rstrip('=')} start >= end: {line.strip()}"))
     return issues
 

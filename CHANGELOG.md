@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (review pass 2)
+- Validation severity hardening: non-positive `LN`, non-integer `LN`, duplicate
+  segment ids, path tokens without `+/-` orientation, malformed/short `S` lines,
+  invalid `n_members`, and malformed region coordinates are now **errors**
+  (previously warnings or unchecked), so `panviz render` aborts on inputs that
+  could crash the renderer. New unit tests cover these.
+- `panviz doctor --config <bad>` now prints a friendly error instead of a
+  traceback.
+- CI gained a `node --check` step for `export_mainfig_natural.js` and
+  `harness/lib/postprocess.js` (Stage 5 JS was previously unexercised).
+- README render examples default to the toy locus; the server batch is shown as
+  an explicit `PANVIZ_INPUT_ROOT` command.
+
 ### Added
 - Panviz-owned export layer (Stage 5): in-browser post-processing
   (x-compression, node outlines, genomic axis, scale bar, viewport) extracted

@@ -135,7 +135,13 @@ def _cmd_version(args: argparse.Namespace) -> int:
 
 def _cmd_doctor(args: argparse.Namespace) -> int:
     """Check the runtime/build environment and report what is missing."""
-    cfg = resolve_config(args.config, {k: getattr(args, k, None) for k in ("rebuild_root", "browser")})
+    try:
+        cfg = resolve_config(
+            args.config, {k: getattr(args, k, None) for k in ("rebuild_root", "browser")}
+        )
+    except (FileNotFoundError, ValueError) as exc:
+        sys.stderr.write(f"error: {exc}\n")
+        return 2
     root = cfg.rebuild_root
     bundle = root / "harness" / "dist" / "sequencetubemap_exact_bundle.js"
     playwright = root / "node_modules" / "playwright-core"

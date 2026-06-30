@@ -111,6 +111,35 @@ class ValidateTests(unittest.TestCase):
             item = LocusInput("x", Path(tmp) / "missing.gfa", Path(tmp) / "missing.tsv", region)
             self.assertTrue(has_errors(validate_locus_input(item)))
 
+    def _locus_with_gfa(self, tmp: str, gfa_text: str) -> LocusInput:
+        d = Path(tmp)
+        (d / "x_pathcollapsed_SV1kb.gfa").write_text(gfa_text)
+        (d / "x_pathcollapsed_SV1kb.path_groups.tsv").write_text("collapsed_path\nRef\n")
+        (d / "region.txt").write_text(
+            "reference_coordinate=c:1-2\nrecommended_SequenceTubeMap_region=c:1-2\n"
+        )
+        return LocusInput(
+            "x",
+            d / "x_pathcollapsed_SV1kb.gfa",
+            d / "x_pathcollapsed_SV1kb.path_groups.tsv",
+            d / "region.txt",
+        )
+
+    def test_duplicate_segment_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            gfa = "S\tA\t*\tLN:i:5\nS\tA\t*\tLN:i:5\nP\tRef\tA+\t*\n"
+            self.assertTrue(has_errors(validate_locus_input(self._locus_with_gfa(tmp, gfa))))
+
+    def test_non_positive_ln_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            gfa = "S\tA\t*\tLN:i:0\nP\tRef\tA+\t*\n"
+            self.assertTrue(has_errors(validate_locus_input(self._locus_with_gfa(tmp, gfa))))
+
+    def test_unoriented_token_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            gfa = "S\tA\t*\tLN:i:5\nP\tRef\tA\t*\n"
+            self.assertTrue(has_errors(validate_locus_input(self._locus_with_gfa(tmp, gfa))))
+
 
 class PngTests(unittest.TestCase):
     def test_toy_preview_png_dimensions(self):

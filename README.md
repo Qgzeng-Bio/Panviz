@@ -74,24 +74,34 @@ built-in defaults < `PANVIZ_*` env vars < `--config <json>` < explicit flags.
 See `config/defaults.json` for the full key list. Validation runs before render
 by default; disable with `--no-validate`.
 
-Reproduce the accepted baseline (all default loci):
+Render the bundled toy locus (the default input is `examples/toy_data`):
 
 ```bash
-bash run_panviz_mainfig.sh
-# equivalent to: python3 bin/panviz render --config config/mainfig_baseline.json
+bash run_panviz_mainfig.sh --only toy_locus
+# equivalent to:
+python3 bin/panviz render --config config/mainfig_baseline.json \
+  --only toy_locus --out-root results/toy
 ```
 
-Render one locus to a scratch directory:
+Render your own locus packages by pointing at their root:
 
 ```bash
 python3 bin/panviz render --config config/mainfig_baseline.json \
-  --only 04_KAS_I_II_KAS_I_II_chr03B --out-root results/smoke_04
+  --input-root /path/to/loci --only my_locus --out-root results/my_locus
+```
+
+Reproduce the original server batch (set the private input root):
+
+```bash
+PANVIZ_INPUT_ROOT=/data9/.../gene_tubemap_all34_pathcollapsed_20260629 \
+  bash run_panviz_mainfig.sh
 ```
 
 Validate inputs first:
 
 ```bash
-python3 bin/panviz validate --only 04_KAS_I_II_KAS_I_II_chr03B
+python3 bin/panviz validate            # validates examples/toy_data
+python3 bin/panviz validate --input-root /path/to/loci
 ```
 
 > `render_pantubemap_mainfig.py` is kept as a deprecated shim that forwards to
