@@ -1,6 +1,8 @@
 {
   "_comment": "Panviz render defaults. Copy and edit, then pass with `panviz render --config <file>`. Any key may be overridden on the command line. Keys starting with '_' are ignored.",
-  "_paths_note": "input_root, out_root, rebuild_root and browser are deployment-specific; override them for your environment.",
+  "_precedence": "built-in defaults < PANVIZ_* env vars < --config file < CLI flags.",
+  "_env_note": "Env overrides: PANVIZ_INPUT_ROOT, PANVIZ_OUT_ROOT, PANVIZ_REBUILD_ROOT, PANVIZ_BROWSER (and PLAYWRIGHT_BROWSERS_PATH for browser detection).",
+  "_paths_note": "input_root and browser are deployment-specific; browser is auto-detected when installed via `playwright install chromium`. Override any of these for your environment.",
 
   "input_root": "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629",
   "out_root": "results/mainfig_axis_ticks_x032_trial_20260630",

@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Portability (Stage 2): Chromium browser auto-detection (scans
+  `PANVIZ_BROWSER`, `PLAYWRIGHT_BROWSERS_PATH`, `~/.cache/ms-playwright`,
+  newest version preferred) and `PANVIZ_*` environment overrides
+  (`PANVIZ_INPUT_ROOT`, `PANVIZ_OUT_ROOT`, `PANVIZ_REBUILD_ROOT`,
+  `PANVIZ_BROWSER`). Config precedence is now
+  defaults < env < `--config` < CLI flags.
+- `config/example.json` template for users on other machines.
+- Actionable CLI errors (exit code 2, no traceback) when the browser or input
+  root is missing, pointing at the fix.
 - Installable `panviz` Python package (stdlib only) splitting the former
   monolithic script into modules: `config`, `discover`, `gfa`, `render`,
   `validate`, and `cli`.

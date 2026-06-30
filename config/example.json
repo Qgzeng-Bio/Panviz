@@ -1,0 +1,17 @@
+{
+  "_comment": "Copy this to your own config and run: `panviz render --config my.json`. Any key may be overridden on the command line. Keys starting with '_' are ignored. The browser is auto-detected if installed via `playwright install chromium`; set it explicitly only if detection fails.",
+
+  "input_root": "/path/to/your/locus_packages",
+  "out_root": "results/my_run",
+
+  "_browser_note": "Optional. Auto-detected from ~/.cache/ms-playwright or PLAYWRIGHT_BROWSERS_PATH. Override only if needed.",
+  "browser": "/path/to/chromium/chrome",
+
+  "_visual_note": "Rendering parameters. Defaults reproduce the accepted Panviz baseline; change with care.",
+  "panel_width": 1800,
+  "x_compression": 0.32,
+  "pad_x": 35,
+  "pad_y": 170,
+  "node_stroke_width": 1.5,
+  "device_scale_factor": 2.0
+}

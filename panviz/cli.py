@@ -53,10 +53,23 @@ def _overrides(args: argparse.Namespace) -> dict:
 def _cmd_render(args: argparse.Namespace) -> int:
     cfg = resolve_config(args.config, _overrides(args))
     cfg.out_root = cfg.out_root.resolve()
-    if not cfg.browser.exists():
-        sys.stderr.write(f"browser executable not found: {cfg.browser}\n")
+    if not str(cfg.browser) or not cfg.browser.exists():
+        sys.stderr.write(
+            f"error: Chromium browser not found at: {cfg.browser or '(unset)'}\n"
+            "  fix: run `playwright install chromium`, or pass --browser PATH "
+            "/ set PANVIZ_BROWSER.\n"
+        )
         return 2
-    loci = discover_loci(cfg.input_root, args.only)
+    try:
+        loci = discover_loci(cfg.input_root, args.only)
+    except FileNotFoundError as exc:
+        sys.stderr.write(
+            f"error: {exc}\n"
+            "  fix: set --input-root PATH, --config FILE, or PANVIZ_INPUT_ROOT to a "
+            "directory of locus packages.\n"
+            "  see examples/ for the expected input layout.\n"
+        )
+        return 2
 
     if args.validate:
         bad = False
@@ -84,7 +97,15 @@ def _cmd_render(args: argparse.Namespace) -> int:
 
 def _cmd_validate(args: argparse.Namespace) -> int:
     cfg = resolve_config(args.config, {"input_root": args.input_root})
-    loci = discover_loci(cfg.input_root, args.only)
+    try:
+        loci = discover_loci(cfg.input_root, args.only)
+    except FileNotFoundError as exc:
+        sys.stderr.write(
+            f"error: {exc}\n"
+            "  fix: set --input-root PATH, --config FILE, or PANVIZ_INPUT_ROOT to a "
+            "directory of locus packages.\n"
+        )
+        return 2
     all_ok = True
     for item in loci:
         errs = validate_locus_input(item)

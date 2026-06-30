@@ -2,16 +2,23 @@
 
 Resolution precedence (lowest to highest):
 
-    package DEFAULTS  <  --config JSON file  <  explicit CLI flags
+    built-in defaults  <  PANVIZ_* env vars  <  --config JSON file  <  explicit CLI flags
 
-The deployment-specific paths (input root, browser) are kept as defaults so the
-tool runs out-of-the-box on the current server; they are overridable via a
-config file or CLI flags, and are expected to move out of the package before an
-independent release (see docs/DEVELOPMENT_ROADMAP.md, Stage 4).
+Environment overrides: ``PANVIZ_INPUT_ROOT``, ``PANVIZ_OUT_ROOT``,
+``PANVIZ_REBUILD_ROOT``, ``PANVIZ_BROWSER`` (and ``PLAYWRIGHT_BROWSERS_PATH``
+for browser auto-detection).
+
+The deployment-specific paths (input root, browser) are kept as last-resort
+defaults so the tool still runs on the original server; the browser is normally
+auto-detected. They are overridable via env vars, a config file, or CLI flags,
+and are expected to move out of the package before an independent release (see
+docs/DEVELOPMENT_ROADMAP.md, Stage 4).
 """
 from __future__ import annotations
 
 import json
+import os
+import re
 from dataclasses import dataclass, fields
 from pathlib import Path
 from typing import Any
@@ -19,20 +26,79 @@ from typing import Any
 # Repository root: panviz/ lives directly under it.
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-# Default deployment input root (collaborator-provided locus packages).
+# Default deployment input root (collaborator-provided locus packages). This is
+# environment-specific; override with --input-root, a config file, or the
+# PANVIZ_INPUT_ROOT environment variable. Outside this server, use examples/ or
+# point at your own locus packages.
 DEFAULT_INPUT_ROOT = (
     "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/"
     "05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629"
 )
-DEFAULT_BROWSER = (
+# Last-resort browser path for the original deployment; normally the browser is
+# auto-detected (see detect_browser) or set via --browser / PANVIZ_BROWSER.
+LEGACY_BROWSER = (
     "/data9/home/qgzeng/.cache/ms-playwright/chromium-1187/chrome-linux/chrome"
 )
 
+
+def _env(name: str, default: str) -> str:
+    """Return a non-empty environment override, else the default."""
+    value = os.environ.get(name)
+    return value if value else default
+
+
+def _chromium_version(path: Path) -> int:
+    match = re.search(r"chromium-(\d+)", str(path))
+    return int(match.group(1)) if match else -1
+
+
+def detect_browser() -> str:
+    """Locate a Chromium executable for rendering, newest version preferred.
+
+    Search order: ``PANVIZ_BROWSER`` -> ``PLAYWRIGHT_BROWSERS_PATH`` ->
+    ``~/.cache/ms-playwright`` -> the legacy deployment path. Returns "" if none
+    is found, so the CLI can emit an actionable error.
+    """
+    explicit = os.environ.get("PANVIZ_BROWSER")
+    if explicit and Path(explicit).exists():
+        return explicit
+
+    roots: list[Path] = []
+    pbp = os.environ.get("PLAYWRIGHT_BROWSERS_PATH")
+    if pbp:
+        roots.append(Path(pbp))
+    roots.append(Path.home() / ".cache" / "ms-playwright")
+
+    candidates: list[Path] = []
+    for root in roots:
+        if root.exists():
+            # chrome-linux (Linux) and chrome-linux64 layouts, plus mac/win names.
+            for pattern in (
+                "chromium-*/chrome-linux/chrome",
+                "chromium-*/chrome-linux64/chrome",
+                "chromium-*/chrome-mac/Chromium.app/Contents/MacOS/Chromium",
+                "chromium-*/chrome-win/chrome.exe",
+            ):
+                candidates.extend(root.glob(pattern))
+
+    legacy = Path(LEGACY_BROWSER)
+    if legacy.exists():
+        candidates.append(legacy)
+
+    existing = [c for c in candidates if c.exists()]
+    if not existing:
+        return ""
+    existing.sort(key=_chromium_version)
+    return str(existing[-1])
+
+
 DEFAULTS: dict[str, Any] = {
-    "input_root": DEFAULT_INPUT_ROOT,
-    "out_root": str(REPO_ROOT / "results/mainfig_axis_ticks_x032_trial_20260630"),
-    "rebuild_root": str(REPO_ROOT),
-    "browser": DEFAULT_BROWSER,
+    "input_root": _env("PANVIZ_INPUT_ROOT", DEFAULT_INPUT_ROOT),
+    "out_root": _env(
+        "PANVIZ_OUT_ROOT", str(REPO_ROOT / "results/mainfig_axis_ticks_x032_trial_20260630")
+    ),
+    "rebuild_root": _env("PANVIZ_REBUILD_ROOT", str(REPO_ROOT)),
+    "browser": detect_browser() or LEGACY_BROWSER,
     "panel_width": 1800,
     "x_compression": 0.32,
     "pad_x": 35,
