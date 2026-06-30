@@ -1,0 +1,18 @@
+#!/usr/bin/env python3
+"""Panviz CLI launcher.
+
+Runs the Panviz command line without requiring installation: it puts the
+repository root on sys.path and dispatches to ``panviz.cli:main``. If Panviz is
+installed (``pip install -e .``), the ``panviz`` console script does the same.
+"""
+import os
+import sys
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
+from panviz.cli import main  # noqa: E402
+
+if __name__ == "__main__":
+    raise SystemExit(main())

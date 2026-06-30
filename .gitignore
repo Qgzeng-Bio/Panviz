@@ -1,7 +1,17 @@
+# Python
 __pycache__/
 *.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+
+# Node
 node_modules/
+
+# Panviz outputs and scratch
 results/
 tmp/
-.DS_Store
 
+.DS_Store

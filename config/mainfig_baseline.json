@@ -1,0 +1,10 @@
+{
+  "_comment": "Accepted Panviz main-figure baseline (2026-06-30). Reproduces the verified 01/04 rendering. Changing these values alters the published baseline; update tests/baseline/ and CHANGELOG.md if you do.",
+  "out_root": "results/mainfig_axis_ticks_x032_trial_20260630",
+  "panel_width": 1800,
+  "x_compression": 0.32,
+  "pad_x": 35,
+  "pad_y": 170,
+  "node_stroke_width": 1.5,
+  "device_scale_factor": 2.0
+}

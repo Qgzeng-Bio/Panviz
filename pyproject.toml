@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "panviz"
+version = "0.1.0.dev0"
+description = "Static, publication-oriented sequence tube map renderer."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "qgzeng", email = "qgzeng5426@gmail.com" }]
+keywords = ["pangenome", "graph-genome", "GFA", "visualization", "sequence-tube-map"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+]
+# The data-conversion / CLI layer is pure standard library. Rendering is
+# delegated to the bundled JavaScript core via Node + playwright-core (managed
+# under node_modules/, not as a Python dependency).
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Qgzeng-Bio/Panviz"
+Repository = "https://github.com/Qgzeng-Bio/Panviz"
+
+[project.scripts]
+panviz = "panviz.cli:main"
+
+[tool.setuptools]
+packages = ["panviz"]

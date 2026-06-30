@@ -8,14 +8,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Installable `panviz` Python package (stdlib only) splitting the former
+  monolithic script into modules: `config`, `discover`, `gfa`, `render`,
+  `validate`, and `cli`.
+- `panviz` command-line interface with `render`, `validate`, and `version`
+  subcommands, plus a `bin/panviz` launcher and a `pyproject.toml` console-script
+  entry point (`pip install -e .`).
+- Externalised render configuration under `config/` (`defaults.json`,
+  `mainfig_baseline.json`) with precedence: defaults < `--config` < CLI flags.
+- Input validation (GFA segment/path lines, path_groups columns, region keys)
+  via `panviz validate` and an opt-in `panviz render --validate`.
 - Structural visual-regression test (`tests/check_svg_structure.py`) with
   committed reference fixtures and per-locus contracts under `tests/baseline/`
   for loci 01 (FAD2) and 04 (KAS_I_II). Runs offline against fixtures or against
   a fresh render via `--from`; exits non-zero on any regression.
 
+### Changed
+- `run_panviz_mainfig.sh` now calls `panviz render --config config/mainfig_baseline.json`.
+- `render_pantubemap_mainfig.py` is now a thin deprecated shim forwarding to
+  `panviz render` (unchanged behaviour and outputs).
+
 ### Removed
 - Unreferenced legacy export scripts `harness/export_exact.js` and
   `harness/export_mainfig.js` (dead code; not on the active render path).
+
+### Verified
+- Render payload for loci 01/04 is byte-identical to the accepted baseline
+  `input.json`; a fresh end-to-end render of locus 01 via the new CLI produces a
+  byte-identical SVG to the committed reference fixture and passes the regression
+  test.
 
 ## [0.1.0-baseline] - 2026-06-30
 

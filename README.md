@@ -24,21 +24,55 @@ Development work should happen here:
 /data9/home/qgzeng/projects/3-Biotools_create/Panviz
 ```
 
-## Current Run Command
+## Command-line interface
 
-Render all default loci into this development workspace:
+Panviz ships a `panviz` CLI (Python standard library only). It runs without
+installation via the launcher, or as an installed console script:
 
 ```bash
 cd /data9/home/qgzeng/projects/3-Biotools_create/Panviz
+
+# Run without installing
+python3 bin/panviz --help
+
+# Or install the CLI (pure-Python, no network needed)
+pip install -e .
+panviz --help
+```
+
+Subcommands:
+
+```bash
+panviz render     # convert locus packages and export static SVG/PNG/PDF
+panviz validate   # check locus-package inputs without rendering
+panviz version    # print the Panviz version
+```
+
+Render settings resolve with precedence: package defaults < `--config <json>`
+< explicit flags. See `config/defaults.json` for the full key list.
+
+Reproduce the accepted baseline (all default loci):
+
+```bash
 bash run_panviz_mainfig.sh
+# equivalent to: python3 bin/panviz render --config config/mainfig_baseline.json
 ```
 
-Render one locus:
+Render one locus to a scratch directory:
 
 ```bash
-cd /data9/home/qgzeng/projects/3-Biotools_create/Panviz
-bash run_panviz_mainfig.sh --only 04_KAS_I_II_KAS_I_II_chr03B --out-root results/smoke_04
+python3 bin/panviz render --config config/mainfig_baseline.json \
+  --only 04_KAS_I_II_KAS_I_II_chr03B --out-root results/smoke_04
 ```
+
+Validate inputs first:
+
+```bash
+python3 bin/panviz validate --only 04_KAS_I_II_KAS_I_II_chr03B
+```
+
+> `render_pantubemap_mainfig.py` is kept as a deprecated shim that forwards to
+> `panviz render`; prefer the CLI.
 
 ## Main Files
 
@@ -47,12 +81,24 @@ upstream-derived rendering code has been copied into Panviz-owned source files.
 
 
 ```text
-render_pantubemap_mainfig.py        # Python batch/data-conversion entry point
-run_panviz_mainfig.sh               # fixed baseline run wrapper
-harness/export_mainfig_natural.js   # current custom static export adapter
+panviz/                             # Panviz Python package (the tool)
+  cli.py                            #   command-line interface (render/validate/version)
+  config.py                         #   defaults + JSON config + precedence merge
+  discover.py                       #   locus-package discovery
+  gfa.py                            #   GFA/path_groups/region -> render payload
+  render.py                         #   render orchestration (-> Node export adapter)
+  validate.py                       #   input/output validation
+bin/panviz                          # CLI launcher (no install required)
+pyproject.toml                      # packaging + `panviz` console script
+config/                             # render configuration
+  defaults.json                     #   documented default settings
+  mainfig_baseline.json             #   accepted 2026-06-30 baseline parameters
+run_panviz_mainfig.sh               # baseline run wrapper (-> panviz render)
+render_pantubemap_mainfig.py        # deprecated shim -> panviz render
+harness/export_mainfig_natural.js   # static export adapter (Node + playwright)
 harness/render_page.html            # local browser render page
 harness/tubemap_exact_entry.js      # adapter to the Panviz core renderer
-src/panviz_core/tubemap.js          # current upstream-derived Panviz layout core
+src/panviz_core/tubemap.js          # upstream-derived Panviz layout core (MIT)
 ```
 
 ## Current Baseline Parameters

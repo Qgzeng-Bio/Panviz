@@ -1,0 +1,15 @@
+{
+  "_comment": "Panviz render defaults. Copy and edit, then pass with `panviz render --config <file>`. Any key may be overridden on the command line. Keys starting with '_' are ignored.",
+  "_paths_note": "input_root, out_root, rebuild_root and browser are deployment-specific; override them for your environment.",
+
+  "input_root": "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629",
+  "out_root": "results/mainfig_axis_ticks_x032_trial_20260630",
+  "browser": "/data9/home/qgzeng/.cache/ms-playwright/chromium-1187/chrome-linux/chrome",
+
+  "panel_width": 1800,
+  "x_compression": 0.32,
+  "pad_x": 35,
+  "pad_y": 170,
+  "node_stroke_width": 1.5,
+  "device_scale_factor": 2.0
+}
