@@ -1,0 +1,130 @@
+{
+  "BACKEND_URL": false,
+  "DATA_SOURCES": [
+    {
+      "name": "snp1kg-BRCA1",
+      "tracks": [
+        {"trackFile": "exampleData/internal/snp1kg-BRCA1.vg.xg", "trackType": "graph", "trackColorSettings": {"mainPalette": "greys", "auxPalette": "ygreys"}},
+        {"trackFile": "exampleData/internal/NA12878-BRCA1.sorted.gam", "trackType": "read"}
+      ],
+      "region": "17:1-100",
+      "bedFile": "exampleData/internal/snp1kg-BRCA1.bed",
+      "dataType": "built-in",
+      "simplify": false,
+      "removeSequences": false
+    },
+    {
+      "name": "vg \"small\" example",
+      "tracks": [
+        {"trackFile": "exampleData/x.vg.xg", "trackType": "graph"},
+        {"trackFile": "exampleData/x.vg.gbwt", "trackType": "haplotype"}
+      ],
+      "dataType": "built-in",
+      "region": "x:1-100"
+    },
+    {
+      "name": "cactus",
+      "tracks": [
+        {"trackFile": "exampleData/cactus.vg.xg", "trackType": "graph"},
+        {"trackFile": "exampleData/cactus-NA12879.sorted.gam", "trackType": "read"}
+      ],
+      "bedFile": "exampleData/cactus.bed",
+      "region": "ref:1-100",
+      "dataType": "built-in"
+    },
+    {
+      "name": "cactus multiple reads",
+      "tracks": [
+        {"trackFile": "exampleData/cactus.vg.xg", "trackType": "graph"},
+        {"trackFile": "exampleData/cactus0_10.sorted.gam", "trackType": "read"},
+        {"trackFile": "exampleData/cactus10_20.sorted.gam", "trackType": "read"}
+      ],
+      "bedFile": "exampleData/cactus.bed",
+      "region": "ref:1-100",
+      "dataType": "built-in"
+    },
+    {
+      "name": "Lancet example",
+      "tracks": [
+        {
+          "trackFile": null,
+          "trackType": "graph",
+          "trackColorSettings": {
+            "mainPalette": "#000000",
+            "auxPalette": "greys",
+            "colorReadsByMappingQuality": false
+          }
+        },
+        {
+          "trackFile": null,
+          "trackType": "read",
+          "trackColorSettings": {
+            "mainPalette": "blues",
+            "auxPalette": "blues"
+          }
+        },
+        {
+          "trackFile": null,
+          "trackType": "read",
+          "trackColorSettings": {
+            "mainPalette": "reds",
+            "auxPalette": "reds"
+          }
+        }
+      ],
+      "bedFile": "https://lancet2-paper.storage.googleapis.com/sequence-tube-map-demo/index.bed",
+      "region": "chr1:7290357-7290857",
+      "dataType": "built-in"
+    }
+  ],
+  "vgPath": ["./", "./bin", "./vg/bin", ""],
+  "chunkixPath": ["scripts"],
+  "dataPath": "exampleData",
+  "internalDataPath": "exampleData/internal/",
+  "tempDirPath": "temp",
+  "fetchTimeout": 15,
+  "maxFileSizeBytes": 1000000000,
+
+  "defaultGraphColorPalette" : {
+    "mainPalette": "#000000", 
+    "auxPalette": "greys", 
+    "colorReadsByMappingQuality": false,
+    "alphaReadsByMappingQuality": false
+  },
+
+  "defaultHaplotypeColorPalette" : {
+    "mainPalette": "plainColors", 
+    "auxPalette": "lightColors", 
+    "colorReadsByMappingQuality": false,
+    "alphaReadsByMappingQuality": false
+  },
+  
+  "defaultReadColorPalette" : {
+    "mainPalette": "blues", 
+    "auxPalette": "reds", 
+    "colorReadsByMappingQuality": false,
+    "alphaReadsByMappingQuality": false
+  },
+
+  "defaultTrackProps" : {
+    "trackType": "graph",
+    "trackColorSettings": {
+      "mainPalette": "#000000",
+      "auxPalette": "greys",
+      "colorReadsByMappingQuality": false,
+      "alphaReadsByMappingQuality": false
+    }
+  },
+
+  "fileTypeToExtensions": {
+    "graph": ".xg,.vg,.hg,.gbz,.pg,.db",
+    "haplotype": ".gbwt,.gbz",
+    "read": ".gam"
+  },
+
+  "MAXUPLOADSIZE": 5242880,
+  "pickerTypeOptions": ["mounted", "upload"],
+  "fileExpirationTime": 86400
+
+
+}

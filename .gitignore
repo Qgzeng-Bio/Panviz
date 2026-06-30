@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+node_modules/
+results/
+tmp/
+.DS_Store
+

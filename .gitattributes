@@ -1,0 +1,13 @@
+# Normalize line endings to LF across platforms
+* text=auto eol=lf
+
+# Upstream-derived rendering core (SequenceTubeMap, MIT) — exclude from
+# GitHub language statistics so they reflect Panviz-owned code.
+src/panviz_core/** linguist-vendored=true
+
+# Prebuilt browser bundle — generated artifact, not hand-written source.
+harness/dist/** linguist-generated=true
+
+# Keep binary-ish render outputs from polluting diffs if ever tracked.
+*.png binary
+*.pdf binary

@@ -1,0 +1,16 @@
+{
+  "name": "panviz",
+  "version": "0.1.0-dev",
+  "private": true,
+  "description": "Static publication-oriented sequence tube map renderer.",
+  "scripts": {
+    "render": "bash run_panviz_mainfig.sh"
+  },
+  "dependencies": {
+    "playwright-core": "1.61.1"
+  },
+  "devNotes": {
+    "runtime": "The checked-in browser bundle under harness/dist contains the bundled D3-based Panviz core. Runtime SVG/PNG/PDF export uses the local node_modules/playwright-core copy.",
+    "fullDevInstall": "When network/package installation is allowed, add the full build dependencies such as d3, d3-selection-multi, deep-equal, webpack, and webpack-cli, then generate package-lock.json with npm install/npm ci."
+  }
+}

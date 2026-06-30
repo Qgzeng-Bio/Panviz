@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #ffffff;
+      }
+      #holder {
+        width: 2400px;
+        min-height: 1200px;
+      }
+      #svg {
+        display: block;
+        width: 2400px;
+        height: 1200px;
+      }
+      #legendDiv {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="holder">
+      <svg id="svg" alt="Rendered sequence tube map visualization"></svg>
+    </div>
+    <div id="legendDiv"></div>
+    <script src="./dist/sequencetubemap_exact_bundle.js"></script>
+  </body>
+</html>
