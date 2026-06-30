@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Reproducible build & setup (Stage 4): `package.json` now declares the bundle
+  build toolchain (d3 v5 line, d3-selection-multi, deep-equal, webpack,
+  webpack-cli as devDependencies) and a `build` script; `playwright-core` stays
+  the only runtime dependency.
+- `panviz doctor` command that checks node, Chromium, the render bundle,
+  `playwright-core`, and (optionally) the build tools, with fix hints.
+- `docs/INSTALL.md` covering Python install, rendering runtime
+  (`npm install` + `playwright install chromium`), environment check, a toy
+  smoke test, and the advanced bundle-rebuild path with its regression gate.
 - Examples & docs (Stage 3): a self-contained synthetic toy locus under
   `examples/` (reproducible via `examples/generate_toy.py`) demonstrating a
   deletion, substitution, and insertion across a reference and five haplotypes,

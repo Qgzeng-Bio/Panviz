@@ -10,6 +10,7 @@ Configuration precedence: package defaults < --config JSON < explicit flags.
 from __future__ import annotations
 
 import argparse
+import shutil
 import sys
 from pathlib import Path
 
@@ -125,6 +126,68 @@ def _cmd_version(args: argparse.Namespace) -> int:
     return 0
 
 
+def _cmd_doctor(args: argparse.Namespace) -> int:
+    """Check the runtime/build environment and report what is missing."""
+    cfg = resolve_config(args.config, {k: getattr(args, k, None) for k in ("rebuild_root", "browser")})
+    root = cfg.rebuild_root
+    bundle = root / "harness" / "dist" / "sequencetubemap_exact_bundle.js"
+    playwright = root / "node_modules" / "playwright-core"
+
+    # (label, ok, required, hint)
+    checks: list[tuple[str, bool, bool, str]] = [
+        (f"python {sys.version.split()[0]}", True, True, ""),
+        (
+            f"node ({shutil.which('node') or 'not found'})",
+            shutil.which("node") is not None,
+            True,
+            "install Node.js >=16 and ensure `node` is on PATH",
+        ),
+        (
+            f"chromium ({cfg.browser if str(cfg.browser) else 'not found'})",
+            bool(str(cfg.browser)) and cfg.browser.exists(),
+            True,
+            "run `playwright install chromium`, or set --browser / PANVIZ_BROWSER",
+        ),
+        (
+            f"render bundle ({bundle})",
+            bundle.exists() and bundle.stat().st_size > 0,
+            True,
+            "rebuild with `npm install && npm run build`",
+        ),
+        (
+            "playwright-core (node_modules)",
+            playwright.exists(),
+            True,
+            "run `npm install`",
+        ),
+        (
+            "build deps (d3, webpack)",
+            (root / "node_modules" / "d3").exists() and (root / "node_modules" / "webpack").exists(),
+            False,
+            "optional; only needed to rebuild the bundle: `npm install`",
+        ),
+    ]
+
+    ok_required = True
+    for label, ok, required, hint in checks:
+        if ok:
+            mark = "ok  "
+        elif required:
+            mark = "MISS"
+            ok_required = False
+        else:
+            mark = "warn"
+        line = f"  [{mark}] {label}"
+        if not ok and hint:
+            line += f"\n         -> {hint}"
+        print(line)
+
+    print(
+        f"\n{'environment OK — ready to render' if ok_required else 'missing required components (see above)'}"
+    )
+    return 0 if ok_required else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="panviz", description=__doc__.splitlines()[0])
     parser.add_argument("--version", action="version", version=f"panviz {__version__}")
@@ -142,6 +205,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_version = sub.add_parser("version", help="print the Panviz version")
     p_version.set_defaults(func=_cmd_version)
+
+    p_doctor = sub.add_parser("doctor", help="check the runtime/build environment")
+    p_doctor.add_argument("--config", type=Path, default=None)
+    p_doctor.add_argument("--rebuild-root", type=Path, default=None)
+    p_doctor.add_argument("--browser", type=Path, default=None)
+    p_doctor.set_defaults(func=_cmd_doctor)
 
     return parser
 
