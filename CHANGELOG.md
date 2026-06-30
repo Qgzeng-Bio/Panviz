@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (review pass 1)
+- Robust render error handling: a `RenderError` now reports missing `node`,
+  missing render bundle, node failures (with stderr tail), and unparseable
+  renderer output as friendly CLI errors instead of tracebacks.
+- Semantic input validation: `panviz validate` and (by default) `panviz render`
+  now check that paths reference defined segments, flag missing `Ref`,
+  non-positive `LN`/`n_members`, duplicate segment ids, and reversed region
+  coordinates — with error/warning severities. Disable with `--no-validate`.
+- Output integrity: PNG header/dimension check (expected = panel × scale) is
+  folded into the per-locus `ok` status.
+- The structural regression test now also enforces **byte-identical** SVG vs the
+  committed reference fixture in `--from` mode.
+- `PANVIZ_BROWSER` is now authoritative (a wrong path errors clearly instead of
+  being silently replaced by auto-detection).
+- Config-file relative paths are anchored at the repo root (CWD-independent).
+- `write_tsv` ignores extra columns, so path-group TSVs with extra fields no
+  longer crash.
+
+### Changed (review pass 1)
+- De-localized defaults: the built-in `input_root` and `config/defaults.json`
+  now point at `examples/toy_data` (no private `/data9` paths); the server batch
+  is reached via `PANVIZ_INPUT_ROOT`. `run_panviz_mainfig.sh` derives its repo
+  dir from `BASH_SOURCE` instead of a hard-coded path.
+- Documented that Panviz installs editable from a clone (renderer reads repo
+  assets by path); README/pyproject clarified. Added
+  `LICENSES/THIRD_PARTY_NOTICES.md` for bundled JS (d3, d3-selection-multi,
+  deep-equal) and tooling.
+
 ### Added
 - Reproducible build & setup (Stage 4): `package.json` now declares the bundle
   build toolchain (d3 v5 line, d3-selection-multi, deep-equal, webpack,

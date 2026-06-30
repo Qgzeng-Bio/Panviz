@@ -45,15 +45,17 @@ Development work should happen here:
 ## Command-line interface
 
 Panviz ships a `panviz` CLI (Python standard library only). It runs without
-installation via the launcher, or as an installed console script:
+installation via the launcher, or as an editable install from the cloned repo:
 
 ```bash
-cd /data9/home/qgzeng/projects/3-Biotools_create/Panviz
+cd Panviz
 
 # Run without installing
 python3 bin/panviz --help
 
-# Or install the CLI (pure-Python, no network needed)
+# Or install the console script (editable, no Python deps).
+# Use an editable install: the renderer reads repo assets (config/, harness/,
+# src/panviz_core/) by path, so a plain wheel copy would not find them.
 pip install -e .
 panviz --help
 ```
@@ -63,11 +65,14 @@ Subcommands:
 ```bash
 panviz render     # convert locus packages and export static SVG/PNG/PDF
 panviz validate   # check locus-package inputs without rendering
+panviz doctor     # check node / Chromium / bundle / playwright-core
 panviz version    # print the Panviz version
 ```
 
-Render settings resolve with precedence: package defaults < `--config <json>`
-< explicit flags. See `config/defaults.json` for the full key list.
+Render settings resolve with precedence:
+built-in defaults < `PANVIZ_*` env vars < `--config <json>` < explicit flags.
+See `config/defaults.json` for the full key list. Validation runs before render
+by default; disable with `--no-validate`.
 
 Reproduce the accepted baseline (all default loci):
 
@@ -133,16 +138,12 @@ src/panviz_core/tubemap.js          # upstream-derived Panviz layout core (MIT)
 
 ## JavaScript Runtime Dependencies
 
-Panviz currently carries a minimal local `node_modules/` runtime dependency copy.
-It is not a symlink. The current copied runtime dependency is:
-
-```text
-node_modules/playwright-core 1.61.1
-```
-
-The browser bundle in `harness/dist/` already contains the bundled Panviz core
-and D3-based drawing logic. When the core is edited, rebuild the bundle after
-installing the full JavaScript development dependencies.
+`node_modules/` is git-ignored; install it locally with `npm install`. Rendering
+needs only `playwright-core` (1.61.1) plus a Chromium build
+(`npx playwright install chromium`); the committed bundle in `harness/dist/`
+already contains the Panviz core and D3-based drawing logic. The d3/webpack
+build tools are `devDependencies`, needed only to rebuild the bundle. See
+[docs/INSTALL.md](docs/INSTALL.md). Run `panviz doctor` to check your setup.
 
 ## Development Goal
 

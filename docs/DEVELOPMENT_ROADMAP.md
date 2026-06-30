@@ -1,47 +1,46 @@
 # Panviz Development Roadmap
 
-## Stage 0: Baseline Preservation
+The hard invariant throughout: **the rendering output must not change**. Every
+stage is gated by `tests/check_svg_structure.py` (structural + byte-exact vs the
+committed reference fixtures).
 
-- Keep `/data9/home/qgzeng/projects/2-C_quinoa/tmp/Panviz` unchanged.
-- Treat the 2026-06-30 accepted figures as visual regression references.
-- Run smoke tests into `results/`, not into the accepted quinoa output directory.
+## Stage 0 — Git foundation ✅
 
-## Stage 1: Software Packaging
+- MIT `LICENSE`, `.gitattributes`, `CHANGELOG`, baseline commit + tag
+  `v0.1.0-baseline`.
 
-- Add a stable command-line interface.
-- Move configurable visual settings into a JSON/YAML config.
-- Split data conversion, rendering, and export into separate modules.
-- Add validation for GFA, path group TSV, region file, and output integrity.
+## Stage 1 — Software packaging ✅
 
-## Stage 2: Panviz-Owned Static Export Core
+- Installable `panviz` package (config / discover / gfa / render / validate /
+  cli), `bin/panviz`, `pyproject.toml`, externalised `config/`.
 
-- Move axis generation from `harness/export_mainfig_natural.js` into `src/axis`.
-- Move node-outline regularization into `src/style`.
-- Move viewport/panel sizing into `src/export`.
-- Add visual regression checks for SVG structure and PNG dimensions.
+## Stage 2 — Portability ✅
 
-## Stage 3: Panviz-Owned Layout Core
+- Chromium auto-detection, `PANVIZ_*` env overrides, friendly CLI errors.
 
-- Fork the parts of `src/panviz_core/tubemap.js` that control layout.
-- Refactor into:
+## Stage 3 — Examples & documentation ✅
 
-```text
-src/model
-src/layout
-src/geometry
-src/style
-src/axis
-src/render_svg
-src/export
-```
+- Synthetic toy locus (`examples/`), `docs/INPUT_FORMAT.md`,
+  `docs/FIGURE_ANATOMY.md`, README gallery + quick start.
 
-- Replace official node-width and lane-placement rules with Panviz rules.
-- Preserve provenance for any SequenceTubeMap-derived functions.
+## Stage 4 — Reproducible build & self-check ✅
 
-## Stage 4: Independent Release
+- `package.json` build toolchain, `panviz doctor`, `docs/INSTALL.md`.
 
-- Remove dependency on project-local paths.
-- Provide installation instructions.
-- Include toy example data.
-- Include a methods paragraph and citation/license notes.
+## Stage 5 — Panviz-owned export layer
 
+- Move axis generation, node-outline regularization, and panel/viewBox sizing
+  from `harness/export_mainfig_natural.js` into Panviz-owned modules under
+  `harness/` / `src/`. Node-side post-processing — no bundle rebuild required.
+
+## Stage 6 — Panviz-owned layout core
+
+- Fork the layout-controlling parts of `src/panviz_core/tubemap.js` into
+  Panviz modules (model / layout / geometry / style / render), preserving MIT
+  provenance. Guard with layout snapshots in addition to SVG byte-equality.
+
+## Stage 7 — Quality & release
+
+- Unit tests (gfa / config / validate), `ruff` + `mypy`, GitHub Actions CI,
+  `CONTRIBUTING.md`, semantic versioning, v1.0.0 release, optional PyPI /
+  Zenodo DOI + `CITATION.cff`.

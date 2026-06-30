@@ -26,14 +26,14 @@ from typing import Any
 # Repository root: panviz/ lives directly under it.
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-# Default deployment input root (collaborator-provided locus packages). This is
-# environment-specific; override with --input-root, a config file, or the
-# PANVIZ_INPUT_ROOT environment variable. Outside this server, use examples/ or
-# point at your own locus packages.
-DEFAULT_INPUT_ROOT = (
-    "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/"
-    "05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629"
-)
+# Out-of-the-box input root: the bundled toy example, so `panviz render` works
+# immediately after a clone. Point at your own locus packages with --input-root,
+# a config file, or the PANVIZ_INPUT_ROOT environment variable.
+#
+# The original server batch lived at
+#   /data9/home/ysxia/.../05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629
+# which is not a built-in default; set PANVIZ_INPUT_ROOT to reproduce it.
+DEFAULT_INPUT_ROOT = str(REPO_ROOT / "examples" / "toy_data")
 # Last-resort browser path for the original deployment; normally the browser is
 # auto-detected (see detect_browser) or set via --browser / PANVIZ_BROWSER.
 LEGACY_BROWSER = (
@@ -59,8 +59,11 @@ def detect_browser() -> str:
     ``~/.cache/ms-playwright`` -> the legacy deployment path. Returns "" if none
     is found, so the CLI can emit an actionable error.
     """
+    # An explicit PANVIZ_BROWSER is authoritative: return it as-is (even if it
+    # does not exist) so a wrong path surfaces as a clear "not found" error
+    # rather than being silently replaced by an auto-detected browser.
     explicit = os.environ.get("PANVIZ_BROWSER")
-    if explicit and Path(explicit).exists():
+    if explicit:
         return explicit
 
     roots: list[Path] = []
@@ -109,6 +112,9 @@ DEFAULTS: dict[str, Any] = {
 
 # Keys that may be supplied via config file or overridden on the CLI.
 CONFIG_KEYS = tuple(DEFAULTS.keys())
+# Path-like keys; relative values in a config file are anchored at REPO_ROOT so
+# they do not depend on the caller's current working directory.
+PATH_CONFIG_KEYS = ("input_root", "out_root", "rebuild_root", "browser")
 
 
 @dataclass
@@ -155,6 +161,11 @@ def load_config_file(path: Path) -> dict[str, Any]:
         raise ValueError(
             f"unknown config keys in {path}: {', '.join(unknown)}\nallowed keys: {allowed}"
         )
+    # Anchor relative path values at REPO_ROOT so they are independent of CWD.
+    for key in PATH_CONFIG_KEYS:
+        value = cleaned.get(key)
+        if isinstance(value, str) and value and not os.path.isabs(value):
+            cleaned[key] = str(REPO_ROOT / value)
     return cleaned
 
 

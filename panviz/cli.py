@@ -3,9 +3,10 @@
 Subcommands:
   render     convert locus packages and export static SVG/PNG/PDF figures
   validate   check locus-package inputs without rendering
+  doctor     check the runtime/build environment
   version    print the Panviz version
 
-Configuration precedence: package defaults < --config JSON < explicit flags.
+Configuration precedence: built-in defaults < PANVIZ_* env < --config JSON < CLI flags.
 """
 from __future__ import annotations
 
@@ -17,7 +18,7 @@ from pathlib import Path
 from . import __version__
 from .config import CONFIG_KEYS, resolve_config
 from .discover import discover_loci
-from .render import render_all
+from .render import RenderError, render_all
 from .validate import validate_locus_input
 
 # Render flags whose argparse dest matches a config key. Defaults are None so
@@ -41,9 +42,10 @@ def _add_render_flags(p: argparse.ArgumentParser) -> None:
     p.add_argument("--node-stroke-width", type=float, default=None)
     p.add_argument("--device-scale-factor", type=float, default=None)
     p.add_argument(
-        "--validate",
-        action="store_true",
-        help="Validate each locus package before rendering; abort on errors.",
+        "--no-validate",
+        dest="validate",
+        action="store_false",
+        help="Skip input validation before rendering (validation is on by default).",
     )
 
 
@@ -52,7 +54,11 @@ def _overrides(args: argparse.Namespace) -> dict:
 
 
 def _cmd_render(args: argparse.Namespace) -> int:
-    cfg = resolve_config(args.config, _overrides(args))
+    try:
+        cfg = resolve_config(args.config, _overrides(args))
+    except (FileNotFoundError, ValueError) as exc:
+        sys.stderr.write(f"error: {exc}\n")
+        return 2
     cfg.out_root = cfg.out_root.resolve()
     if not str(cfg.browser) or not cfg.browser.exists():
         sys.stderr.write(
@@ -73,19 +79,23 @@ def _cmd_render(args: argparse.Namespace) -> int:
         return 2
 
     if args.validate:
-        bad = False
+        blocking = False
         for item in loci:
-            errs = validate_locus_input(item)
-            if errs:
-                bad = True
-                sys.stderr.write(f"[invalid] {item.locus}\n")
-                for e in errs:
-                    sys.stderr.write(f"  - {e}\n")
-        if bad:
-            sys.stderr.write("validation failed; nothing rendered\n")
+            for severity, message in validate_locus_input(item):
+                sys.stderr.write(f"  [{severity}] {item.locus}: {message}\n")
+                if severity == "error":
+                    blocking = True
+        if blocking:
+            sys.stderr.write(
+                "validation errors found; nothing rendered (use --no-validate to override)\n"
+            )
             return 1
 
-    summary = render_all(cfg, loci)
+    try:
+        summary = render_all(cfg, loci)
+    except (RenderError, ValueError, FileNotFoundError) as exc:
+        sys.stderr.write(f"error: {exc}\n")
+        return 1
     failed = [row for row in summary if row["Status"] != "ok"]
     for row in summary:
         print(f"{row['Status']:>6}  {row['Locus']}  ({row['Nodes']} nodes, {row['Tracks']} tracks)")
@@ -97,7 +107,11 @@ def _cmd_render(args: argparse.Namespace) -> int:
 
 
 def _cmd_validate(args: argparse.Namespace) -> int:
-    cfg = resolve_config(args.config, {"input_root": args.input_root})
+    try:
+        cfg = resolve_config(args.config, {"input_root": args.input_root})
+    except (FileNotFoundError, ValueError) as exc:
+        sys.stderr.write(f"error: {exc}\n")
+        return 2
     try:
         loci = discover_loci(cfg.input_root, args.only)
     except FileNotFoundError as exc:
@@ -109,14 +123,13 @@ def _cmd_validate(args: argparse.Namespace) -> int:
         return 2
     all_ok = True
     for item in loci:
-        errs = validate_locus_input(item)
-        if errs:
-            all_ok = False
-            print(f"[FAIL] {item.locus}")
-            for e in errs:
-                print(f"   - {e}")
-        else:
-            print(f"[ ok ] {item.locus}")
+        issues = validate_locus_input(item)
+        has_error = any(sev == "error" for sev, _ in issues)
+        all_ok = all_ok and not has_error
+        tag = "FAIL" if has_error else ("warn" if issues else " ok ")
+        print(f"[{tag}] {item.locus}")
+        for severity, message in issues:
+            print(f"   ({severity}) {message}")
     print(f"\n{'all loci valid' if all_ok else 'validation errors found'} ({len(loci)} loci)")
     return 0 if all_ok else 1
 

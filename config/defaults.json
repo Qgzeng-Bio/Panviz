@@ -4,9 +4,9 @@
   "_env_note": "Env overrides: PANVIZ_INPUT_ROOT, PANVIZ_OUT_ROOT, PANVIZ_REBUILD_ROOT, PANVIZ_BROWSER (and PLAYWRIGHT_BROWSERS_PATH for browser detection).",
   "_paths_note": "input_root and browser are deployment-specific; browser is auto-detected when installed via `playwright install chromium`. Override any of these for your environment.",
 
-  "input_root": "/data9/home/ysxia/Adata/plant/youzong/rawdata/analysis/22_answer_reviews/05_sv_gene/gene_tubemap_all34_pathcollapsed_20260629",
+  "input_root": "examples/toy_data",
   "out_root": "results/mainfig_axis_ticks_x032_trial_20260630",
-  "browser": "/data9/home/qgzeng/.cache/ms-playwright/chromium-1187/chrome-linux/chrome",
+  "_browser_autodetect": "Omit 'browser' to auto-detect Chromium from ~/.cache/ms-playwright (or PLAYWRIGHT_BROWSERS_PATH); set it only to override.",
 
   "panel_width": 1800,
   "x_compression": 0.32,

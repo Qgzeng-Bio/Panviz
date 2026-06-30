@@ -5,6 +5,10 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "panviz"
 version = "0.1.0.dev0"
+# Install editable from a clone (`pip install -e .`): the renderer reads repo
+# assets (config/, harness/, harness/dist/, src/panviz_core/) by path relative to
+# the package, so a non-editable wheel would not ship them. Packaging those
+# assets for standalone wheels is planned for a later release.
 description = "Static, publication-oriented sequence tube map renderer."
 readme = "README.md"
 requires-python = ">=3.9"

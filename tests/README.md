@@ -21,6 +21,7 @@ Currently covered loci:
 
 - `01_FAD2_FAD2_chr08B`
 - `04_KAS_I_II_KAS_I_II_chr03B`
+- `toy_locus` (the bundled synthetic example)
 
 ## Run
 
@@ -48,6 +49,8 @@ Exit code is `0` only if every checked locus passes, so it can gate commits.
 
 ## What each contract asserts
 
+- **Byte-exact** match to the committed reference SVG (in `--from` mode, a fresh
+  render must be byte-identical to `tests/baseline/<locus>.reference.svg`).
 - SVG root `width` / `height` / `viewBox` match the baseline.
 - Required classes present: `track`, `node`, `genomic-axis`, `genomic-scale-bar`.
 - Required text present: axis endpoint coordinates and the `5 kb` scale bar.

@@ -16,9 +16,13 @@ from typing import Any
 from .config import REPO_ROOT, RenderConfig
 from .discover import LocusInput
 from .gfa import gfa_to_payload
-from .validate import validate_output
+from .validate import png_dimensions, validate_output
 
 UPSTREAM_COMMIT = "33b7a7e5df9f8052974ef8e6c689a031dac6e2c9"
+
+
+class RenderError(Exception):
+    """A render failed for a reason worth reporting to the user without a traceback."""
 
 SUMMARY_FIELDS = [
     "Locus",
@@ -41,8 +45,11 @@ def run(cmd: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
 
 
 def write_tsv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
+    # extrasaction="ignore" so path-group rows with extra columns do not raise.
     with Path(path).open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter="\t", lineterminator="\n")
+        writer = csv.DictWriter(
+            handle, fieldnames=fieldnames, delimiter="\t", lineterminator="\n", extrasaction="ignore"
+        )
         writer.writeheader()
         writer.writerows(rows)
 
@@ -74,24 +81,37 @@ def render_locus(cfg: RenderConfig, item: LocusInput) -> dict[str, Any]:
         ["locus", "collapsed_path", "n_members", "representative_member", "members"],
     )
 
-    proc = run(
-        [
-            "node",
-            str(cfg.rebuild_root / "harness/export_mainfig_natural.js"),
-            "--input",
-            str(input_json),
-            "--svg",
-            str(svg),
-            "--png",
-            str(png),
-            "--pdf",
-            str(pdf),
-            "--browser",
-            str(cfg.browser),
-        ],
-        cwd=cfg.rebuild_root,
-    )
-    browser_counts = json.loads(proc.stdout.strip().splitlines()[-1])
+    cmd = [
+        "node",
+        str(cfg.rebuild_root / "harness/export_mainfig_natural.js"),
+        "--input",
+        str(input_json),
+        "--svg",
+        str(svg),
+        "--png",
+        str(png),
+        "--pdf",
+        str(pdf),
+        "--browser",
+        str(cfg.browser),
+    ]
+    try:
+        proc = run(cmd, cwd=cfg.rebuild_root)
+    except FileNotFoundError as exc:
+        raise RenderError(
+            f"`node` was not found on PATH ({exc}). Install Node.js >=16 and ensure `node` is runnable."
+        ) from exc
+    except subprocess.CalledProcessError as exc:
+        tail = "\n".join((exc.stderr or exc.stdout or "").strip().splitlines()[-15:])
+        raise RenderError(
+            f"renderer failed for {item.locus} (node exit {exc.returncode}):\n{tail}"
+        ) from exc
+    try:
+        browser_counts = json.loads(proc.stdout.strip().splitlines()[-1])
+    except (json.JSONDecodeError, IndexError) as exc:
+        raise RenderError(
+            f"could not parse renderer output for {item.locus}: {exc}\n{proc.stdout[-500:]}"
+        ) from exc
     metadata = {
         "status": "trial",
         "renderer": "official SequenceTubeMap tubemap.js with coordinate-level x compression",
@@ -125,7 +145,12 @@ def render_locus(cfg: RenderConfig, item: LocusInput) -> dict[str, Any]:
             ]
         )
     )
-    ok = validate_output(svg, png, pdf)
+    # Output integrity: files non-empty, PNG is a real PNG of the expected size.
+    expected_w = round(browser_counts["panelWidth"] * cfg.device_scale_factor)
+    expected_h = round(browser_counts["panelHeight"] * cfg.device_scale_factor)
+    dims = png_dimensions(png)
+    png_ok = dims is not None and abs(dims[0] - expected_w) <= 1 and abs(dims[1] - expected_h) <= 1
+    ok = validate_output(svg, png, pdf) and png_ok
     return {
         "Locus": item.locus,
         "Nodes": counts["nodes"],
@@ -143,6 +168,13 @@ def render_locus(cfg: RenderConfig, item: LocusInput) -> dict[str, Any]:
 
 
 def render_all(cfg: RenderConfig, loci: list[LocusInput]) -> list[dict[str, Any]]:
+    bundle = cfg.rebuild_root / "harness" / "dist" / "sequencetubemap_exact_bundle.js"
+    if not bundle.exists():
+        raise RenderError(
+            f"render bundle not found: {bundle}\n"
+            "  fix: rebuild with `npm install && npm run build`, or point "
+            "--rebuild-root / PANVIZ_REBUILD_ROOT at the Panviz repo."
+        )
     cfg.out_root.mkdir(parents=True, exist_ok=True)
     summary = [render_locus(cfg, item) for item in loci]
     write_tsv(cfg.out_root / "render_summary.tsv", summary, SUMMARY_FIELDS)

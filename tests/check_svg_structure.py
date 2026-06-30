@@ -29,7 +29,7 @@ Exit code is 0 only if every checked locus passes.
 from __future__ import annotations
 
 import argparse
-import glob
+import hashlib
 import json
 import re
 import sys
@@ -61,7 +61,16 @@ def parse_svg_root(svg_text: str) -> dict:
     return out
 
 
-def check_locus(spec_path: Path, svg_path: Path, metadata_path: Path | None) -> list[tuple[bool, str]]:
+def _sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def check_locus(
+    spec_path: Path,
+    svg_path: Path,
+    metadata_path: Path | None,
+    reference_svg: Path | None = None,
+) -> list[tuple[bool, str]]:
     """Return a list of (passed, message) checks for one locus."""
     results: list[tuple[bool, str]] = []
 
@@ -106,26 +115,31 @@ def check_locus(spec_path: Path, svg_path: Path, metadata_path: Path | None) -> 
         else:
             add(False, f"metadata json not found (counts unchecked): {metadata_path}")
 
+    # Byte-exact regression: a fresh render must match the committed reference
+    # SVG exactly. Skipped when validating the reference against itself.
+    if reference_svg and reference_svg.exists() and reference_svg.resolve() != svg_path.resolve():
+        add(
+            _sha256(svg_path) == _sha256(reference_svg),
+            f"SVG byte-identical to reference fixture ({reference_svg.name})",
+        )
+
     return results
 
 
-def resolve_inputs(locus: str, from_dir: Path | None) -> tuple[Path, Path, Path | None]:
-    """Return (spec_path, svg_path, metadata_path) for a locus."""
+def resolve_inputs(locus: str, from_dir: Path | None) -> tuple[Path, Path, Path | None, Path]:
+    """Return (spec_path, svg_path, metadata_path, reference_svg) for a locus."""
     spec_path = BASELINE_DIR / f"{locus}.expected.json"
+    reference_svg = BASELINE_DIR / f"{locus}.reference.svg"
     if from_dir is None:
-        # Offline: use committed reference fixtures.
-        return (
-            spec_path,
-            BASELINE_DIR / f"{locus}.reference.svg",
-            BASELINE_DIR / f"{locus}.metadata.json",
-        )
+        # Offline: validate the committed reference fixtures themselves.
+        return spec_path, reference_svg, BASELINE_DIR / f"{locus}.metadata.json", reference_svg
     # Fresh render: locate output files under <from_dir>/<locus>/.
     locus_dir = from_dir / locus
     svgs = sorted(locus_dir.glob("*_natural.svg"))
     metas = sorted(locus_dir.glob("*_render_metadata.json"))
     svg_path = svgs[0] if svgs else locus_dir / f"{locus}.svg"
     meta_path = metas[0] if metas else None
-    return spec_path, svg_path, meta_path
+    return spec_path, svg_path, meta_path, reference_svg
 
 
 def main() -> int:
@@ -156,12 +170,12 @@ def main() -> int:
 
     all_passed = True
     for locus in loci:
-        spec_path, svg_path, meta_path = resolve_inputs(locus, from_dir)
+        spec_path, svg_path, meta_path, reference_svg = resolve_inputs(locus, from_dir)
         if not spec_path.exists():
             print(_c(f"[SKIP] {locus}: no expected.json contract", RED))
             all_passed = False
             continue
-        checks = check_locus(spec_path, svg_path, meta_path)
+        checks = check_locus(spec_path, svg_path, meta_path, reference_svg)
         passed = sum(1 for ok, _ in checks if ok)
         total = len(checks)
         locus_ok = passed == total
