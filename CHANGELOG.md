@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Panviz-owned export layer (Stage 5): in-browser post-processing
+  (x-compression, node outlines, genomic axis, scale bar, viewport) extracted
+  from the adapter into `harness/lib/postprocess.js`; the adapter is now a thin
+  orchestrator. Verified byte-identical output.
+- Quality & release scaffolding (Stage 7): `tests/test_unit.py` (15 stdlib
+  unit tests), `ruff`/`mypy` config and a `dev` extra, GitHub Actions CI
+  (lint + unit tests + offline regression on Python 3.9/3.12), `CONTRIBUTING.md`,
+  and `CITATION.cff`.
+- `docs/CORE_ARCHITECTURE.md` (Stage 6): ownership map and the gated plan for
+  forking the SequenceTubeMap-derived layout core (blocked on the bundle-rebuild
+  toolchain and a layout-snapshot guard).
+
 ### Fixed (review pass 1)
 - Robust render error handling: a `RenderError` now reports missing `node`,
   missing render bundle, node failures (with stderr tail), and unparseable

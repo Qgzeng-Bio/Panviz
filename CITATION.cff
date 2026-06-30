@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use Panviz, please cite it as below."
+title: "Panviz: a static, publication-oriented sequence tube map renderer"
+abstract: >-
+  Panviz renders pangenome graph loci (path-collapsed GFA) as static,
+  publication-ready sequence tube map figures (SVG/PNG/PDF) with a genomic
+  coordinate axis, haplotype ribbons, and structural-variant visualization.
+type: software
+authors:
+  - family-names: "qgzeng"
+    email: "qgzeng5426@gmail.com"
+repository-code: "https://github.com/Qgzeng-Bio/Panviz"
+url: "https://github.com/Qgzeng-Bio/Panviz"
+license: MIT
+version: "0.1.0-dev"
+keywords:
+  - pangenome
+  - graph genome
+  - GFA
+  - visualization
+  - sequence tube map
+  - structural variation
+references:
+  - type: software
+    title: "sequenceTubeMap"
+    notes: "Panviz's layout/drawing core is derived from vgteam/sequenceTubeMap (MIT)."
+    repository-code: "https://github.com/vgteam/sequenceTubeMap"
+    license: MIT

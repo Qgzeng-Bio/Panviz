@@ -127,7 +127,10 @@ def render_locus(cfg: RenderConfig, item: LocusInput) -> dict[str, Any]:
         "visOptions": payload["visOptions"],
         "referenceCoordinate": payload["referenceCoordinate"],
         "mainFigure": payload["mainFigure"],
-        "note": "X coordinates are compressed after official layout; no non-uniform SVG scaling is used, so strokes and text are not squeezed.",
+        "note": (
+            "X coordinates are compressed after official layout; no non-uniform "
+            "SVG scaling is used, so strokes and text are not squeezed."
+        ),
     }
     metadata_json.write_text(json.dumps(metadata, indent=2))
     notes_md.write_text(

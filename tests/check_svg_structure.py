@@ -39,7 +39,6 @@ BASELINE_DIR = Path(__file__).resolve().parent / "baseline"
 
 GREEN = "\033[32m"
 RED = "\033[31m"
-DIM = "\033[2m"
 RESET = "\033[0m"
 
 

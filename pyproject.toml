@@ -25,6 +25,9 @@ classifiers = [
 # under node_modules/, not as a Python dependency).
 dependencies = []
 
+[project.optional-dependencies]
+dev = ["ruff>=0.6", "mypy>=1.8"]
+
 [project.urls]
 Homepage = "https://github.com/Qgzeng-Bio/Panviz"
 Repository = "https://github.com/Qgzeng-Bio/Panviz"
@@ -34,3 +37,15 @@ panviz = "panviz.cli:main"
 
 [tool.setuptools]
 packages = ["panviz"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.9"
+ignore_missing_imports = true
+warn_unused_ignores = true

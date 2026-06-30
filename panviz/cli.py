@@ -21,12 +21,6 @@ from .discover import discover_loci
 from .render import RenderError, render_all
 from .validate import validate_locus_input
 
-# Render flags whose argparse dest matches a config key. Defaults are None so
-# that "unset" can fall back to the config file / package defaults.
-_PATH_FLAGS = ("input_root", "out_root", "rebuild_root", "browser")
-_INT_FLAGS = ("panel_width", "pad_x", "pad_y")
-_FLOAT_FLAGS = ("x_compression", "node_stroke_width", "device_scale_factor")
-
 
 def _add_render_flags(p: argparse.ArgumentParser) -> None:
     p.add_argument("--config", type=Path, default=None, help="JSON config file with render settings.")
