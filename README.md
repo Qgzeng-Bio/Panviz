@@ -77,7 +77,7 @@ by default; disable with `--no-validate`.
 Render the bundled toy locus (the default input is `examples/toy_data`):
 
 ```bash
-bash run_panviz_mainfig.sh --only toy_locus
+bash scripts/run_panviz_mainfig.sh --only toy_locus
 # equivalent to:
 python3 bin/panviz render --config config/mainfig_baseline.json \
   --only toy_locus --out-root results/toy
@@ -94,7 +94,7 @@ Reproduce the original server batch (set the private input root):
 
 ```bash
 PANVIZ_INPUT_ROOT=/data9/.../gene_tubemap_all34_pathcollapsed_20260629 \
-  bash run_panviz_mainfig.sh
+  bash scripts/run_panviz_mainfig.sh
 ```
 
 Validate inputs first:
@@ -104,8 +104,8 @@ python3 bin/panviz validate            # validates examples/toy_data
 python3 bin/panviz validate --input-root /path/to/loci
 ```
 
-> `render_pantubemap_mainfig.py` is kept as a deprecated shim that forwards to
-> `panviz render`; prefer the CLI.
+> `scripts/render_pantubemap_mainfig.py` is kept as a deprecated shim that
+> forwards to `panviz render`; prefer the CLI.
 
 ## Main Files
 
@@ -115,7 +115,7 @@ upstream-derived rendering code has been copied into Panviz-owned source files.
 
 ```text
 panviz/                             # Panviz Python package (the tool)
-  cli.py                            #   command-line interface (render/validate/version)
+  cli.py                            #   command-line interface (render/validate/doctor)
   config.py                         #   defaults + JSON config + precedence merge
   discover.py                       #   locus-package discovery
   gfa.py                            #   GFA/path_groups/region -> render payload
@@ -126,9 +126,10 @@ pyproject.toml                      # packaging + `panviz` console script
 config/                             # render configuration
   defaults.json                     #   documented default settings
   mainfig_baseline.json             #   accepted 2026-06-30 baseline parameters
-run_panviz_mainfig.sh               # baseline run wrapper (-> panviz render)
-render_pantubemap_mainfig.py        # deprecated shim -> panviz render
+scripts/run_panviz_mainfig.sh       # baseline run wrapper (-> panviz render)
+scripts/render_pantubemap_mainfig.py # deprecated shim -> panviz render
 harness/export_mainfig_natural.js   # static export adapter (Node + playwright)
+harness/lib/postprocess.js          # Panviz axis/style/compaction/viewport
 harness/render_page.html            # local browser render page
 harness/tubemap_exact_entry.js      # adapter to the Panviz core renderer
 src/panviz_core/tubemap.js          # upstream-derived Panviz layout core (MIT)

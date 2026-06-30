@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (repo layout)
+- Moved the runnable scripts into `scripts/` (`run_panviz_mainfig.sh`,
+  `render_pantubemap_mainfig.py`) and the development handoff into `docs/`, so
+  the repository root holds only standard project files (README, LICENSE,
+  CHANGELOG, CONTRIBUTING, CITATION, pyproject, package.json, AGENTS). Updated
+  all references (README, package.json, tests/README); rendering output
+  unchanged.
+
 ### Fixed (review pass 2)
 - Validation severity hardening: non-positive `LN`, non-integer `LN`, duplicate
   segment ids, path tokens without `+/-` orientation, malformed/short `S` lines,

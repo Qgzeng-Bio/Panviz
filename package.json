@@ -7,7 +7,7 @@
     "node": ">=16"
   },
   "scripts": {
-    "render": "bash run_panviz_mainfig.sh",
+    "render": "bash scripts/run_panviz_mainfig.sh",
     "build": "webpack --config harness/webpack.exact.config.js"
   },
   "dependencies": {

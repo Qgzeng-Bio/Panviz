@@ -35,7 +35,7 @@ python3 tests/check_svg_structure.py
 Validate a fresh render (one subdirectory per locus):
 
 ```bash
-bash run_panviz_mainfig.sh --only 01_FAD2_FAD2_chr08B --out-root results/check_01
+bash scripts/run_panviz_mainfig.sh --only 01_FAD2_FAD2_chr08B --out-root results/check_01
 python3 tests/check_svg_structure.py --from results/check_01
 ```
 
