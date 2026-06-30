@@ -8,12 +8,57 @@ Develop Panviz as an independent static sequence-tube-map plotting software unde
 /data9/home/qgzeng/projects/3-Biotools_create/Panviz
 ```
 
-The accepted quinoa rendering baseline must remain unchanged unless explicitly requested:
+The accepted oil-palm key-gene pan-visualization final rendering result must remain unchanged unless explicitly requested:
 
 ```text
 /data9/home/qgzeng/projects/2-C_quinoa/tmp/Panviz
 /data9/home/qgzeng/projects/2-C_quinoa/tmp/static_svg_rendered_sequencetubemap_mainfig_axis_ticks_x032_trial_20260630
 ```
+
+
+## Final Oil-Palm Key-Gene Pan-Visualization Result
+
+The final accepted result directory for the current oil-palm key-gene pan-visualization figure set is:
+
+```text
+/data9/home/qgzeng/projects/2-C_quinoa/tmp/static_svg_rendered_sequencetubemap_mainfig_axis_ticks_x032_trial_20260630
+```
+
+Treat this directory as the final/currently satisfactory figure output. Do not overwrite, move, or delete it unless the user explicitly asks.
+
+This result contains the 17-locus batch output with per-locus SVG/PNG/PDF/input JSON/metadata files plus `render_summary.tsv`. The accepted visual style includes:
+
+- x compression: `0.32`
+- panel width: `1800`
+- top chromosome coordinate axis
+- endpoint coordinate labels
+- short upward-only coordinate ticks
+- lower scale bar, e.g. `5 kb` for 01
+- regularized rounded node outlines
+- node stroke width: `1.5`
+- no `preserveAspectRatio="none"` non-uniform SVG squeezing
+
+The 01 output from this final directory was visually accepted by the user and used as the reference style for later Panviz development smoke tests.
+
+## 2026-06-30 Drawing Progress Summary
+
+Today's rendering work progressed through these stages:
+
+1. Reused the official SequenceTubeMap layout/rendering logic as the baseline renderer.
+2. Added a natural main-figure export layer rather than using non-uniform SVG squeezing.
+3. Set x-coordinate compression to `0.32` for a compact main-figure panel.
+4. Regularized node outlines into rounded boxes with consistent stroke settings.
+5. Added a top genomic coordinate axis with labels such as `chr08B:14.05-14.11 Mb`.
+6. Replaced endpoint-only axis labels with a true ruler: visible ticks and Mb labels.
+7. Shortened coordinate-axis tick marks so they only extend upward from the axis.
+8. Added explicit endpoint coordinate labels, e.g. `14.046 Mb` and `14.107 Mb` for 01.
+9. Added/kept the lower scale bar, e.g. `5 kb` for 01.
+10. Batch-rendered all 17 loci into the final accepted result directory above.
+11. Verified SVG/PDF/PNG outputs were non-empty and retained `g.track`, `g.node`, `genomic-axis`, and `genomic-scale-bar`.
+12. Started the independent Panviz development workspace under `/data9/home/qgzeng/projects/3-Biotools_create/Panviz`.
+13. Moved the upstream-derived rendering core into Panviz-owned `src/panviz_core/` and removed top-level or vendor `sequenceTubeMap/` runtime directories.
+14. Replaced the `node_modules` symlink with a local minimal runtime dependency copy: `node_modules/playwright-core 1.61.1`.
+15. Verified the development Panviz workspace with 01 and 04 smoke tests under `results/`.
 
 ## Current Status
 
@@ -239,7 +284,8 @@ Do not start by heavily editing `src/panviz_core/tubemap.js`; it is still the cu
 
 - Do not modify `/data9/home/qgzeng/data/`.
 - Do not modify `/data9/home/qgzeng/tools/`.
-- Do not modify the accepted baseline under `/data9/home/qgzeng/projects/2-C_quinoa/tmp/Panviz` unless the user explicitly asks.
+- Do not modify the accepted oil-palm key-gene final result under `/data9/home/qgzeng/projects/2-C_quinoa/tmp/static_svg_rendered_sequencetubemap_mainfig_axis_ticks_x032_trial_20260630` unless the user explicitly asks.
+- Do not modify the accepted baseline scripts under `/data9/home/qgzeng/projects/2-C_quinoa/tmp/Panviz` unless the user explicitly asks.
 - New development renders should go under:
 
 ```text
