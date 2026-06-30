@@ -12,7 +12,7 @@ committed reference fixtures).
 ## Stage 1 — Software packaging ✅
 
 - Installable `panviz` package (config / discover / gfa / render / validate /
-  cli), `bin/panviz`, `pyproject.toml`, externalised `config/`.
+  cli), `scripts/panviz`, `pyproject.toml`, externalised `config/`.
 
 ## Stage 2 — Portability ✅
 

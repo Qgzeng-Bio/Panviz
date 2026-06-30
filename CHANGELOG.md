@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed (repo layout)
-- Moved the runnable scripts into `scripts/` (`run_panviz_mainfig.sh`,
-  `render_pantubemap_mainfig.py`) and the development handoff into `docs/`, so
-  the repository root holds only standard project files (README, LICENSE,
-  CHANGELOG, CONTRIBUTING, CITATION, pyproject, package.json, AGENTS). Updated
-  all references (README, package.json, tests/README); rendering output
-  unchanged.
+- Consolidated all runnable scripts under `scripts/` — the CLI launcher
+  (`bin/panviz` → `scripts/panviz`), the baseline wrapper
+  (`run_panviz_mainfig.sh`), and the deprecated shim
+  (`render_pantubemap_mainfig.py`) — and moved the development handoff into
+  `docs/`. The repository root now holds only standard project files (README,
+  LICENSE, CHANGELOG, CONTRIBUTING, CITATION, pyproject, package.json, AGENTS),
+  and the top-level `bin/` directory was removed. Updated all references
+  (README, docs, examples, package.json, CI); rendering output unchanged.
 
 ### Fixed (review pass 2)
 - Validation severity hardening: non-positive `LN`, non-integer `LN`, duplicate

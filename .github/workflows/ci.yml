@@ -43,5 +43,5 @@ jobs:
 
       - name: CLI smoke
         run: |
-          python bin/panviz version
-          python bin/panviz validate
+          python scripts/panviz version
+          python scripts/panviz validate

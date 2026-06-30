@@ -11,4 +11,4 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_DIR"
 
-python3 bin/panviz render --config config/mainfig_baseline.json "$@"
+python3 scripts/panviz render --config config/mainfig_baseline.json "$@"

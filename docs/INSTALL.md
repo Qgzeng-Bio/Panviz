@@ -16,7 +16,7 @@ git clone git@github.com:Qgzeng-Bio/Panviz.git
 cd Panviz
 
 # run without installing
-python3 bin/panviz --help
+python3 scripts/panviz --help
 
 # or install the console script (no third-party Python deps)
 pip install -e .

@@ -26,7 +26,7 @@ cd /path/to/Panviz
 python3 examples/generate_toy.py
 
 # render
-python3 bin/panviz render --config config/mainfig_baseline.json \
+python3 scripts/panviz render --config config/mainfig_baseline.json \
   --input-root examples/toy_data --only toy_locus --out-root results/toy
 
 # open results/toy/toy_locus/toy_locus_sequencetubemap_mainfig_natural.svg

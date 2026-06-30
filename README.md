@@ -13,7 +13,7 @@ and an insertion across a reference and five haplotypes. See
 
 ```bash
 cd /path/to/Panviz
-python3 bin/panviz render --config config/mainfig_baseline.json \
+python3 scripts/panviz render --config config/mainfig_baseline.json \
   --input-root examples/toy_data --only toy_locus --out-root results/toy
 # -> results/toy/toy_locus/toy_locus_sequencetubemap_mainfig_natural.{svg,pdf,png}
 ```
@@ -51,7 +51,7 @@ installation via the launcher, or as an editable install from the cloned repo:
 cd Panviz
 
 # Run without installing
-python3 bin/panviz --help
+python3 scripts/panviz --help
 
 # Or install the console script (editable, no Python deps).
 # Use an editable install: the renderer reads repo assets (config/, harness/,
@@ -79,14 +79,14 @@ Render the bundled toy locus (the default input is `examples/toy_data`):
 ```bash
 bash scripts/run_panviz_mainfig.sh --only toy_locus
 # equivalent to:
-python3 bin/panviz render --config config/mainfig_baseline.json \
+python3 scripts/panviz render --config config/mainfig_baseline.json \
   --only toy_locus --out-root results/toy
 ```
 
 Render your own locus packages by pointing at their root:
 
 ```bash
-python3 bin/panviz render --config config/mainfig_baseline.json \
+python3 scripts/panviz render --config config/mainfig_baseline.json \
   --input-root /path/to/loci --only my_locus --out-root results/my_locus
 ```
 
@@ -100,8 +100,8 @@ PANVIZ_INPUT_ROOT=/data9/.../gene_tubemap_all34_pathcollapsed_20260629 \
 Validate inputs first:
 
 ```bash
-python3 bin/panviz validate            # validates examples/toy_data
-python3 bin/panviz validate --input-root /path/to/loci
+python3 scripts/panviz validate            # validates examples/toy_data
+python3 scripts/panviz validate --input-root /path/to/loci
 ```
 
 > `scripts/render_pantubemap_mainfig.py` is kept as a deprecated shim that
@@ -121,8 +121,8 @@ panviz/                             # Panviz Python package (the tool)
   gfa.py                            #   GFA/path_groups/region -> render payload
   render.py                         #   render orchestration (-> Node export adapter)
   validate.py                       #   input/output validation
-bin/panviz                          # CLI launcher (no install required)
 pyproject.toml                      # packaging + `panviz` console script
+scripts/panviz                      # CLI launcher (no install required)
 config/                             # render configuration
   defaults.json                     #   documented default settings
   mainfig_baseline.json             #   accepted 2026-06-30 baseline parameters

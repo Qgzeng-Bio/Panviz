@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Deprecated entry point. Use ``panviz render`` (or ``bin/panviz render``).
+"""Deprecated entry point. Use ``panviz render`` (or ``scripts/panviz render``).
 
 Kept for backward compatibility with the original flat-flag interface. All
 arguments are forwarded verbatim to the ``panviz render`` subcommand, so
@@ -19,6 +19,6 @@ from panviz.cli import main  # noqa: E402
 if __name__ == "__main__":
     sys.stderr.write(
         "note: render_pantubemap_mainfig.py is deprecated; "
-        "use `panviz render` or `bin/panviz render`.\n"
+        "use `panviz render` or `scripts/panviz render`.\n"
     )
     raise SystemExit(main(["render", *sys.argv[1:]]))
