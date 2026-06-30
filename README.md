@@ -3,6 +3,24 @@
 Panviz is the development workspace for a static, publication-oriented
 sequence tube map renderer.
 
+![Panviz toy locus tube map](examples/toy_locus.png)
+
+*Example: the bundled toy locus (`examples/`) showing a deletion, a substitution,
+and an insertion across a reference and five haplotypes. See
+[docs/FIGURE_ANATOMY.md](docs/FIGURE_ANATOMY.md).*
+
+## Try it in 30 seconds
+
+```bash
+cd /path/to/Panviz
+python3 bin/panviz render --config config/mainfig_baseline.json \
+  --input-root examples/toy_data --only toy_locus --out-root results/toy
+# -> results/toy/toy_locus/toy_locus_sequencetubemap_mainfig_natural.{svg,pdf,png}
+```
+
+Documentation: [input format](docs/INPUT_FORMAT.md) ·
+[figure anatomy](docs/FIGURE_ANATOMY.md) · [examples](examples/README.md)
+
 This repository starts from the accepted `2-C_quinoa/tmp/Panviz` baseline but
 is intended to evolve into an independent plotting tool. The current development version carries an upstream-derived core copy in
 `src/panviz_core/`, while Panviz owns the GFA conversion, static export, axis

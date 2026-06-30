@@ -1,0 +1,7 @@
+locus	collapsed_path	n_members	representative_member	members
+toy_locus	Ref	1	Ref	Ref
+toy_locus	hap1	9	acc01	acc01,acc02,acc03,acc04,acc05,acc06,acc07,acc08,acc09
+toy_locus	hap2	6	acc10	acc10,acc11,acc12,acc13,acc14,acc15
+toy_locus	hap3	5	acc16	acc16,acc17,acc18,acc19,acc20
+toy_locus	hap4	3	acc21	acc21,acc22,acc23
+toy_locus	hap5	2	acc24	acc24,acc25

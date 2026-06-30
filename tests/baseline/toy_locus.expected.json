@@ -1,0 +1,33 @@
+{
+  "locus": "toy_locus",
+  "description": "Synthetic toy locus (deletion + substitution + insertion). Ships in examples/ so anyone can run Panviz end-to-end without private data.",
+  "svg_root": {
+    "width": "1800",
+    "height": "1538",
+    "viewBox": "339 -220 693 592"
+  },
+  "required_classes": {
+    "track": 1,
+    "node": 1,
+    "genomic-axis": 1,
+    "genomic-scale-bar": 1
+  },
+  "required_text": [
+    "1.234 Mb",
+    "1.260 Mb",
+    "5 kb"
+  ],
+  "forbidden_substrings": [
+    "preserveAspectRatio=\"none\""
+  ],
+  "metadata_counts": {
+    "input_nodes": 15,
+    "input_tracks": 6,
+    "nodeChildren": 15,
+    "trackChildren": 44,
+    "panelWidth": 1800,
+    "panelHeight": 1538,
+    "viewBoxWidth": 693,
+    "viewBoxHeight": 592
+  }
+}

@@ -1,0 +1,22 @@
+H	VN:Z:1.0
+S	bb00	*	LN:i:2000
+S	bb01	*	LN:i:1500
+S	bb02	*	LN:i:2500
+S	bb03	*	LN:i:1800
+S	bb04	*	LN:i:1200
+S	bb05	*	LN:i:2200
+S	bb06	*	LN:i:1600
+S	bb07	*	LN:i:2400
+S	bb08	*	LN:i:1400
+S	bb09	*	LN:i:2600
+S	bb10	*	LN:i:2000
+S	delX	*	LN:i:2500	TYPE:Z:DEL	SVLEN:i:-2500
+S	subR	*	LN:i:1800	TYPE:Z:REF	SVLEN:i:0
+S	subA	*	LN:i:1800	TYPE:Z:SNP	SVLEN:i:0
+S	insY	*	LN:i:1500	TYPE:Z:INS	SVLEN:i:1500
+P	Ref	bb00+,bb01+,bb02+,bb03+,delX+,bb04+,bb05+,bb06+,subR+,bb07+,bb08+,bb09+,bb10+	*	CN:i:1
+P	hap1	bb00+,bb01+,bb02+,bb03+,delX+,bb04+,bb05+,bb06+,subR+,bb07+,bb08+,bb09+,bb10+	*	CN:i:9
+P	hap2	bb00+,bb01+,bb02+,bb03+,bb04+,bb05+,bb06+,subR+,bb07+,bb08+,bb09+,bb10+	*	CN:i:6
+P	hap3	bb00+,bb01+,bb02+,bb03+,delX+,bb04+,bb05+,bb06+,subA+,bb07+,bb08+,bb09+,bb10+	*	CN:i:5
+P	hap4	bb00+,bb01+,bb02+,bb03+,delX+,bb04+,bb05+,bb06+,subR+,bb07+,insY+,bb08+,bb09+,bb10+	*	CN:i:3
+P	hap5	bb00+,bb01+,bb02+,bb03+,bb04+,bb05+,bb06+,subA+,bb07+,insY+,bb08+,bb09+,bb10+	*	CN:i:2

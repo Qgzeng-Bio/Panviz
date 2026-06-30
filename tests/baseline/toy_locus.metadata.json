@@ -1,0 +1,52 @@
+{
+  "status": "trial",
+  "renderer": "official SequenceTubeMap tubemap.js with coordinate-level x compression",
+  "upstream_commit": "33b7a7e5df9f8052974ef8e6c689a031dac6e2c9",
+  "locus": "toy_locus",
+  "input": {
+    "gfa": "examples/toy_data/toy_locus/toy_locus_pathcollapsed_SV1kb.gfa",
+    "path_groups": "examples/toy_data/toy_locus/toy_locus_pathcollapsed_SV1kb.path_groups.tsv",
+    "region": "examples/toy_data/toy_locus/region.txt"
+  },
+  "output": {
+    "svg": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/toy_check/toy_locus/toy_locus_sequencetubemap_mainfig_natural.svg",
+    "png": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/toy_check/toy_locus/toy_locus_sequencetubemap_mainfig_natural.png",
+    "pdf": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/toy_check/toy_locus/toy_locus_sequencetubemap_mainfig_natural.pdf",
+    "input_json": "/data9/home/qgzeng/projects/3-Biotools_create/Panviz/results/toy_check/toy_locus/toy_locus_sequencetubemap_mainfig_natural_input.json"
+  },
+  "counts": {
+    "input_nodes": 15,
+    "input_tracks": 6,
+    "tracks": 1,
+    "nodes": 1,
+    "trackChildren": 44,
+    "nodeChildren": 15,
+    "panelWidth": 1800,
+    "panelHeight": 1538,
+    "viewBoxWidth": 693,
+    "viewBoxHeight": 592
+  },
+  "visOptions": {
+    "compressedView": true,
+    "removeRedundantNodes": false,
+    "transparentNodes": false,
+    "showReads": false,
+    "showSoftClips": false,
+    "coloredNodes": [],
+    "mappingQualityCutoff": 0
+  },
+  "referenceCoordinate": {
+    "chrom": "chrTOY",
+    "start": 1234000,
+    "end": 1259500
+  },
+  "mainFigure": {
+    "panelWidth": 1800,
+    "xCompression": 0.32,
+    "padX": 35,
+    "padY": 170,
+    "nodeStrokeWidth": 1.5,
+    "deviceScaleFactor": 2.0
+  },
+  "note": "X coordinates are compressed after official layout; no non-uniform SVG scaling is used, so strokes and text are not squeezed."
+}

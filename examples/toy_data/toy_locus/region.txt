@@ -1,0 +1,2 @@
+reference_coordinate=chrTOY:1234000-1259500
+recommended_SequenceTubeMap_region=chrTOY:1234000-1259500
