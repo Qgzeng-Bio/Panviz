@@ -9,16 +9,38 @@ sequence tube map renderer.
 and an insertion across a reference and five haplotypes. See
 [docs/FIGURE_ANATOMY.md](docs/FIGURE_ANATOMY.md).*
 
-## Try it in 30 seconds
+## Installation
+
+Requirements: **Python ≥ 3.9**, **Node.js ≥ 16**, and **git**.
 
 ```bash
-cd /path/to/Panviz
-python3 scripts/panviz render --config config/mainfig_baseline.json \
-  --input-root examples/toy_data --only toy_locus --out-root results/toy
+# 1. clone
+git clone https://github.com/Qgzeng-Bio/Panviz.git
+cd Panviz
+
+# 2. install the Python CLI (pure standard library; editable install)
+pip install -e .
+
+# 3. install the rendering runtime (needed to draw figures)
+npm ci                            # installs playwright-core reproducibly (package-lock.json)
+npx playwright install chromium   # download a Chromium build
+
+# 4. check the environment
+panviz doctor
+
+# 5. smoke test on the bundled toy locus (no private data needed)
+panviz render --config config/mainfig_baseline.json \
+  --only toy_locus --out-root results/toy
 # -> results/toy/toy_locus/toy_locus_sequencetubemap_mainfig_natural.{svg,pdf,png}
 ```
 
-Documentation: [input format](docs/INPUT_FORMAT.md) ·
+Prefer not to install? Run it in place with `python3 scripts/panviz …`. Only
+rendering needs Node/Chromium — `panviz validate` and the conversion layer are
+pure Python. An editable install (`-e`) is required because the renderer reads
+repo assets (`config/`, `harness/`, `src/panviz_core/`) by path.
+
+Documentation: [install details](docs/INSTALL.md) ·
+[input format](docs/INPUT_FORMAT.md) ·
 [figure anatomy](docs/FIGURE_ANATOMY.md) · [examples](examples/README.md)
 
 This repository starts from the accepted `2-C_quinoa/tmp/Panviz` baseline but
@@ -44,23 +66,7 @@ Development work should happen here:
 
 ## Command-line interface
 
-Panviz ships a `panviz` CLI (Python standard library only). It runs without
-installation via the launcher, or as an editable install from the cloned repo:
-
-```bash
-cd Panviz
-
-# Run without installing
-python3 scripts/panviz --help
-
-# Or install the console script (editable, no Python deps).
-# Use an editable install: the renderer reads repo assets (config/, harness/,
-# src/panviz_core/) by path, so a plain wheel copy would not find them.
-pip install -e .
-panviz --help
-```
-
-Subcommands:
+After [installation](#installation), the `panviz` command provides:
 
 ```bash
 panviz render     # convert locus packages and export static SVG/PNG/PDF
@@ -68,6 +74,8 @@ panviz validate   # check locus-package inputs without rendering
 panviz doctor     # check node / Chromium / bundle / playwright-core
 panviz version    # print the Panviz version
 ```
+
+(Without installing, use `python3 scripts/panviz <subcommand>` instead.)
 
 Render settings resolve with precedence:
 built-in defaults < `PANVIZ_*` env vars < `--config <json>` < explicit flags.
