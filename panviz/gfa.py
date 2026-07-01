@@ -15,6 +15,20 @@ from .config import RenderConfig
 from .discover import LocusInput
 
 
+def sv_label(name: str, type_: Any, svlen: Any, length: Any) -> str:
+    """Build an SV node label from its type and size, e.g. 'INS +10.8 kb'."""
+    prefix = f"{type_} " if type_ else ""
+    value = svlen if isinstance(svlen, int) and svlen != 0 else length
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        return str(type_ or name)
+    sign = "+" if isinstance(svlen, int) and svlen > 0 else ("-" if isinstance(svlen, int) and svlen < 0 else "")
+    magnitude = abs(value)
+    size = f"{magnitude / 1000:.1f} kb" if magnitude >= 1000 else f"{magnitude} bp"
+    return f"{prefix}{sign}{size}"
+
+
 def parse_gfa_tags(fields: list[str]) -> dict[str, Any]:
     tags: dict[str, Any] = {}
     for field in fields:
@@ -131,6 +145,17 @@ def gfa_to_payload(
         track["id"] = idx
         if track["name"] == "Ref":
             track["indexOfFirstBase"] = 1
+    # Label map for variant (non-reference) nodes; used only when annotate_sv is on.
+    sv_annotations = {
+        node["name"]: sv_label(
+            node["name"],
+            node["metadata"].get("TYPE"),
+            node["metadata"].get("SVLEN"),
+            node["metadata"].get("sequenceLength"),
+        )
+        for node in nodes
+        if node["metadata"].get("TYPE") and node["metadata"].get("TYPE") != "REF"
+    }
     payload = {
         "locus": item.locus,
         "nodes": nodes,
@@ -155,7 +180,9 @@ def gfa_to_payload(
             "padY": cfg.pad_y,
             "nodeStrokeWidth": cfg.node_stroke_width,
             "deviceScaleFactor": cfg.device_scale_factor,
+            "annotateSv": cfg.annotate_sv,
         },
+        "svAnnotations": sv_annotations,
         "input": {"gfa": str(item.gfa), "path_groups": str(item.path_groups), "region": str(item.region)},
     }
     return payload, {"nodes": len(nodes), "tracks": len(tracks_raw)}, group_rows

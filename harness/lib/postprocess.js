@@ -287,6 +287,51 @@
     scaleGroup.appendChild(scaleText);
   }
 
+  // --- 4b. SV node annotations (opt-in) -----------------------------------
+  // Label variant nodes with "<TYPE> <±size>" placed just above each box's top
+  // edge (with a small gap). The label may overlap the ribbon band; a white
+  // halo keeps it legible.
+  function drawSvLabels(svg, ctx) {
+    var settings = ctx.settings;
+    if (!settings.annotateSv || !settings.svAnnotations) return;
+    var nodePaths = svg.querySelectorAll("g.node path");
+    // One ribbon height = tallest node box (spans all tracks) / track count.
+    var maxNodeHeight = 0;
+    nodePaths.forEach(function (el) {
+      var h = el.getBBox().height;
+      if (h > maxNodeHeight) maxNodeHeight = h;
+    });
+    var tracks = settings.trackCount || 1;
+    var gap = tracks > 0 ? maxNodeHeight / tracks : 6; // ≈ one color ribbon
+    var group = document.createElementNS(SVG_NS, "g");
+    group.setAttribute("class", "sv-annotation");
+    var FONT = 7;
+    // 标签相对节点框顶边的上移量, 以"一条 ribbon"为单位: 1.0=框顶上方一条 ribbon(原始位置),
+    // 数值越小标签越靠下(下移)。可按需微调。
+    var SV_LABEL_GAP_RATIO = 0.5;
+    nodePaths.forEach(function (el) {
+      var name = el.getAttribute("id");
+      if (!name) return;
+      var label = settings.svAnnotations[name];
+      if (!label) return;
+      var box = el.getBBox();
+      var text = document.createElementNS(SVG_NS, "text");
+      text.setAttribute("x", box.x + box.width / 2);
+      text.setAttribute("y", box.y - gap * SV_LABEL_GAP_RATIO); // 上方 ratio 条 ribbon(下移标签)
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("font-family", "Arial, sans-serif");
+      text.setAttribute("font-size", FONT);
+      text.setAttribute("font-weight", "600");
+      text.setAttribute("fill", "#111111");
+      text.setAttribute("stroke", "#FFFFFF");
+      text.setAttribute("stroke-width", "0.6");
+      text.setAttribute("paint-order", "stroke");
+      text.textContent = label;
+      group.appendChild(text);
+    });
+    if (group.childNodes.length) svg.appendChild(group);
+  }
+
   // --- 5. panel + viewBox -------------------------------------------------
   function finalizeViewport(svg, ctx) {
     var settings = ctx.settings;
@@ -312,6 +357,7 @@
     regularizeNodeOutlines(svg, ctx);
     pruneExtraChildren(svg);
     drawAnnotations(svg, ctx);
+    drawSvLabels(svg, ctx);
     return finalizeViewport(svg, ctx);
   };
 })();

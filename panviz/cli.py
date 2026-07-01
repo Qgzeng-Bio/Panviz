@@ -36,6 +36,14 @@ def _add_render_flags(p: argparse.ArgumentParser) -> None:
     p.add_argument("--node-stroke-width", type=float, default=None)
     p.add_argument("--device-scale-factor", type=float, default=None)
     p.add_argument(
+        "--annotate-sv",
+        dest="annotate_sv",
+        action="store_const",
+        const=True,
+        default=None,
+        help="Label variant (SV) nodes with their id and length.",
+    )
+    p.add_argument(
         "--no-validate",
         dest="validate",
         action="store_false",

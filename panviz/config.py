@@ -108,6 +108,7 @@ DEFAULTS: dict[str, Any] = {
     "pad_y": 170,
     "node_stroke_width": 1.5,
     "device_scale_factor": 2.0,
+    "annotate_sv": False,
 }
 
 # Keys that may be supplied via config file or overridden on the CLI.
@@ -131,6 +132,7 @@ class RenderConfig:
     pad_y: int
     node_stroke_width: float
     device_scale_factor: float
+    annotate_sv: bool = False
 
     def __post_init__(self) -> None:
         self.input_root = Path(self.input_root)
@@ -143,6 +145,7 @@ class RenderConfig:
         self.pad_y = int(self.pad_y)
         self.node_stroke_width = float(self.node_stroke_width)
         self.device_scale_factor = float(self.device_scale_factor)
+        self.annotate_sv = bool(self.annotate_sv)
 
 
 def load_config_file(path: Path) -> dict[str, Any]:

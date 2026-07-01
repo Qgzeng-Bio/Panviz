@@ -13,5 +13,8 @@
   "pad_x": 35,
   "pad_y": 170,
   "node_stroke_width": 1.5,
-  "device_scale_factor": 2.0
+  "device_scale_factor": 2.0,
+
+  "_annotate_sv_note": "Label variant nodes with their type and size (e.g. 'INS +10.8 kb'). Off by default; also available as the --annotate-sv flag.",
+  "annotate_sv": false
 }

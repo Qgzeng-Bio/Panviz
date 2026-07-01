@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Optional SV node annotation (`--annotate-sv` / `annotate_sv` config): labels
+  each variant node with its type and signed size (e.g. `INS +10.8 kb`,
+  `DEL -3.0 kb`, `SNP 1.8 kb`), placed one ribbon-height above the node box with
+  a white halo for legibility. Labels are real (searchable) SVG text. Off by
+  default, so the accepted baseline rendering stays byte-identical. Implemented
+  Python-side (`sv_label`, payload `svAnnotations`) plus a `drawSvLabels` step in
+  the Panviz-owned `harness/lib/postprocess.js`; unit tests added.
 - Reproducible JS build: committed `package-lock.json` pinning the bundle
   toolchain. `npm ci && npm run build` now rebuilds
   `harness/dist/sequencetubemap_exact_bundle.js` **deterministically**

@@ -29,6 +29,26 @@ with `examples/generate_toy.py`).
 
 The toy locus contains one of each, plus a haplotype combining all three.
 
+## Annotating variant nodes (optional)
+
+Pass `--annotate-sv` (or set `annotate_sv: true` in a config file) to label each
+variant node with its type and size, e.g. `INS +10.8 kb`, `DEL -3.0 kb`,
+`SNP 1.8 kb`:
+
+```bash
+panviz render --config config/mainfig_baseline.json --annotate-sv \
+  --input-root /path/to/loci --only my_locus --out-root results/my_locus
+```
+
+- Only non-reference nodes (those with a `TYPE` other than `REF`) are labelled.
+- The label is `TYPE ±size`; the size is the signed `SVLEN` (falling back to the
+  segment length), formatted as `kb`/`bp`.
+- Each label sits one ribbon-height above its node box (a white halo keeps it
+  legible where it overlaps the ribbon band). The label is real SVG text —
+  selectable and searchable in the vector output.
+
+This is off by default, so the accepted baseline rendering is unchanged.
+
 ## Output files
 
 Each render writes, per locus, into `<out_root>/<locus>/`:

@@ -35,6 +35,9 @@ async function main() {
   const nodeStrokeWidth = Number(panel.nodeStrokeWidth || 1.5);
   const deviceScaleFactor = Number(panel.deviceScaleFactor || 2);
   const referenceCoordinate = payload.referenceCoordinate || null;
+  const annotateSv = Boolean(panel.annotateSv);
+  const svAnnotations = payload.svAnnotations || {};
+  const trackCount = (payload.tracks || []).length;
   const pagePath = path.resolve(__dirname, "render_page.html");
 
   const browser = await chromium.launch({
@@ -65,7 +68,7 @@ async function main() {
     const layout = await page.$eval(
       "#svg",
       (svg, settings) => window.__panvizPostProcess(svg, settings),
-      { panelWidth, xCompression, padX, padY, nodeStrokeWidth, referenceCoordinate }
+      { panelWidth, xCompression, padX, padY, nodeStrokeWidth, referenceCoordinate, annotateSv, svAnnotations, trackCount }
     );
 
     const svgText = await page.$eval("#svg", (svg) => new XMLSerializer().serializeToString(svg));

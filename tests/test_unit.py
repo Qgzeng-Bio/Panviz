@@ -12,7 +12,7 @@ from pathlib import Path
 
 from panviz.config import DEFAULTS, REPO_ROOT, detect_browser, resolve_config
 from panviz.discover import LocusInput, discover_loci
-from panviz.gfa import gfa_to_payload, parse_gfa_tags, parse_path_token
+from panviz.gfa import gfa_to_payload, parse_gfa_tags, parse_path_token, sv_label
 from panviz.validate import has_errors, png_dimensions, validate_locus_input
 
 TOY_ROOT = REPO_ROOT / "examples" / "toy_data"
@@ -71,6 +71,28 @@ class GfaTests(unittest.TestCase):
         self.assertEqual(counts, {"nodes": 15, "tracks": 6})
         self.assertEqual(payload["mainFigure"]["xCompression"], 0.32)
         self.assertEqual(payload["tracks"][0]["name"], "Ref")
+
+    def test_toy_sv_annotations(self):
+        cfg = resolve_config(BASELINE_CONFIG, {})
+        payload, _, _ = gfa_to_payload(_toy(), cfg)
+        ann = payload["svAnnotations"]
+        self.assertEqual(ann.get("delX"), "DEL -2.5 kb")
+        self.assertEqual(ann.get("insY"), "INS +1.5 kb")
+        self.assertNotIn("bb00", ann)  # backbone (REF) nodes are not annotated
+
+
+class SvLabelTests(unittest.TestCase):
+    def test_insertion(self):
+        self.assertEqual(sv_label("SV001", "INS", 10771, 10771), "INS +10.8 kb")
+
+    def test_deletion(self):
+        self.assertEqual(sv_label("delX", "DEL", -3000, 3000), "DEL -3.0 kb")
+
+    def test_snp_uses_segment_length(self):
+        self.assertEqual(sv_label("subA", "SNP", 0, 1800), "SNP 1.8 kb")
+
+    def test_small_value_in_bp(self):
+        self.assertEqual(sv_label("x", "INS", 500, 500), "INS +500 bp")
 
 
 class DiscoverTests(unittest.TestCase):
